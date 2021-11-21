@@ -48,7 +48,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
     volume = [100000]
     results_key = ['volume', 'a', 'u', 'Cn', 'Nd', 'PML']
     step1_results = dict.fromkeys(results_key)
-    for itr in range(1, 10):
+    for itr in range(1, 50):
         Cn = dict(filter(lambda elem: elem[1].inn == True, PML.items()))
         print('Total mems: %d, Itr: %d, mems: %d' % (len(PML.keys()), itr, len(Cn)))
         c_f.write('\nTotal mems in GS: %d, Itr: %d, mems in reduced GS: %d' % (len(PML.keys()), itr, len(Cn)))
@@ -60,14 +60,14 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         c_f.write("---> Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         print("Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2)
-        if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
-            c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
-            print('az 1');  break
+        # if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
+        #     c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
+        #     print('az 1');  break
         if violation(PML, Nd, st, u, vol, a, itr, c_f):
             c_f.write("Termination condition: %s\n" % 'No violating potential memeber.')
             print('az 2');  break
     f_name = str('%dx%d_results.pickle' % (wt, ht))
     pickle_out = open(f_name, "wb")
-    pickle.dump([step1_results['Cn'], step1_results['a'], step1_results['u'], step1_results['PML'], step1_results['volume']], pickle_out)
+    pickle.dump([step1_results['Cn'], step1_results['a'], step1_results['u'], step1_results['PML'], step1_results['volume'], step1_results['Nd']], pickle_out)
     pickle_out.close()
     return step1_results

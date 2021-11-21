@@ -147,18 +147,26 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
         node_names = []
         sss = []
         mored = 0
+        new_generated_nodes = []
         while len(remained_nodes):
             temp_list = []
-            sss.append(remained_nodes.pop(0))
-            for i in sss:
-                temp_list.append(i)
-                for j in remained_nodes:
-                    if np.sqrt((i[0] - j[0])**2 + (i[1] - j[1])**2) < 2:
-                        temp_list.append(j)
-                        mored += 1
+            temp_node = remained_nodes.pop(0)
+            added_x = temp_node[0]
+            added_y = temp_node[1]
+            temp_list.append(temp_node)
+            for j in remained_nodes:
+                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 3:
+                    temp_list.append(j)
+                    mored += 1
+                    added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
+                    added_y = np.mean([temp_list[i][1] for i in range(len(temp_list))], axis=0)
+                    remained_nodes.pop(remained_nodes.index(j))
+                    new_generated_nodes.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
+            sss.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
+        # remained_nodes = [tuple(sss[i]) for i in range(len(sss))]
+        # # uniq_animal_groups = map(list, set(map(tuple, animal_groups)))
+        # remained_nodes = map(list, set([remained_nodes]))
         remained_nodes = sss
-
-
         for i in remained_nodes:
             # if i[4]:
             xv.append(i[0])
