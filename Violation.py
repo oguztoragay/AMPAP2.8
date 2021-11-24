@@ -31,7 +31,7 @@ def violation(PML, Nd, st, u, vol, a, itr, c_f):
     vioCn4 = bunabax
     vioCn_abs = {k: abs(v) for k, v in vioCn4.items()}
     vioSort = dict(sorted(vioCn_abs.items(), key=operator.itemgetter(1), reverse=True))
-    num = ceil(min(len(vioSort), 500))
+    num = ceil(min(len(vioSort), 50))
     c_f.write("Iter: %d, violate: %d, selected: %d\n" % (itr, len(vioSort.keys()), num))
     print("Iter: %d, violate: %d, selected: %d" % (itr, len(vioSort.keys()), num))
     for i in range(num):
