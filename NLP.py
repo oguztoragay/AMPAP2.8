@@ -102,18 +102,18 @@ def nlp(Nd, Cn, smax, solver_name):
     # m.dual = Suffix(direction=Suffix.IMPORT_EXPORT)
     # timer.stop('importing')
     timer.stop('all')
-    print(timer)
+    # print(timer)
 
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
     # solver = SolverFactory('bonmin', executable='C:/Users/ozt0008/Desktop/CoinAll-1.6.0-win64-intel11.1/CoinAll-1.6.0-win64-intel11.1/bin/bonmin.exe', tee=True)
     solver = SolverFactory(solver_name, executable='C:/Program Files/Ipopt/bin/ipopt.exe', tee=False)
-    solver.options['constr_viol_tol'] = 1e-9
+    solver.options['constr_viol_tol'] = 1e-6
     solver.options['tol'] = 1e-6 #10**-(itr+2)
     solver.options['acceptable_tol'] = 1e-6
     solver.options['acceptable_iter'] = 10
     solver.options['linear_solver'] = 'pardiso'
     solver.options['max_iter'] = 10000
-    solver.options['obj_scaling_factor'] = 1.0
+    solver.options['obj_scaling_factor'] = 0.1
     solver.options['print_level'] = 0
     # solver.options['print_user_options'] = 'yes'
     # solver.options['print_advanced_options'] = 'yes'

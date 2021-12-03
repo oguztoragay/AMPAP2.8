@@ -60,9 +60,9 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         c_f.write("---> Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         print("Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2)
-        # if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
-        #     c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
-        #     print('az 1');  break
+        if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
+            c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
+            print('az 1');  break
         if violation(PML, Nd, st, u, vol, a, itr, c_f):
             c_f.write("Termination condition: %s\n" % 'No violating potential memeber.')
             print('az 2');  break

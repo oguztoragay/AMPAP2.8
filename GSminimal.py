@@ -26,9 +26,10 @@ class Generate:  # Ground structure generator
             dx, dy = abs(Nd[i][0] - Nd[j][0]), abs(Nd[i][1] - Nd[j][1])
             angle = np.rint(math.degrees(math.atan2(dy, dx)))
             if gcd(int(dx), int(dy)) <= int(width / (wt - 1)):
-                if 45 < angle < 90 or 90 < angle < 135 or (angle == 0 and dx <= width / (wt - 1)) or (
-                        angle == 90 and dy <= height / (ht - 1)) or (
-                        (angle == 45 or angle == 135) and dx <= width / (wt - 1)):
+                if 45 < angle < 90 or 90 < angle < 135 or \
+                        (angle == 0 and dx <= width / (wt - 1)) or \
+                        (angle == 90 and dy <= height / (ht - 1)) or \
+                        ((angle == 45 or angle == 135) and dx <= width / (wt - 1)):
                     seg = [] if convex else LineString([Nd[i], Nd[j]])
                     if convex or poly.contains(seg) or poly.boundary.contains(seg):
                         name_iter += 1
@@ -155,7 +156,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
             added_y = temp_node[1]
             temp_list.append(temp_node)
             for j in remained_nodes:
-                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 3:
+                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 1:
                     temp_list.append(j)
                     mored += 1
                     added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)

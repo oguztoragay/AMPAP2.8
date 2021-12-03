@@ -51,7 +51,6 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number):
     fig.savefig(str(foldername + '/' + 'Ground Structure ' + draw_number + '.pdf'), bbox_inches='tight')
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
-
 def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number):
     # colors_list = list(['k', 'k', 'k'])
     # if s_tep == 1:
@@ -59,10 +58,10 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     # colcol = colors_list[itr]
     burdan = celements
     # Xdic = X
-    # X_dic = [i for i, k in X.items() if k > 0.2]
+    X_dic = [i for i, k in X.items() if k > 0.2]
     nodeset1 = []
     nodeset2 = []
-    for i in [k for k, a in X.items() if a > 0.2]:
+    for i in X_dic:
         nodeset1.append(burdan[float(i)].nodei.name)
         nodeset2.append(burdan[float(i)].nodej.name)
     node_list = list(set(nodeset1) | set(nodeset2))
@@ -91,7 +90,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
         i_pos1 = burdan[i].nodei.name
         i_pos2 = burdan[i].nodej.name
         G.add_edge(i_pos1, i_pos2)
-        if i in X:
+        if i in X_dic:
             edge_widths.update({(i_pos1, i_pos2): 5 * X[i]})
             edge_colors.update({(i_pos1, i_pos2): 'k'}) # colcol
             edge_styles.update({(i_pos1, i_pos2): 'solid'})
