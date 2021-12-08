@@ -1,19 +1,21 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import networkx as nx
+import numpy as np
 from My_count import count
 
-size_ = (7, 7)
+
 @count
 def general_darw(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, which_one):
     ss = str(general_darw.counter)
     draw_number = ss.zfill(5)
+    size_ = (np.sqrt(len(nodes.keys())), np.sqrt(len(nodes.keys())))
     if which_one == 1:
-        Draw_GROUND_dashed(nodes, celements,foldername, draw_number)
+        Draw_GROUND_dashed(nodes, celements, foldername, draw_number, size_)
     else:
-        Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number)
+        Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_)
 
-def Draw_GROUND_dashed(nodes, elements, foldername, draw_number):
+def Draw_GROUND_dashed(nodes, elements, foldername, draw_number, size_):
     fig, ax = plt.subplots(figsize=size_)
     G = nx.Graph()
     pos = {}
@@ -43,7 +45,7 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number):
         i_pos1 = elements[i].nodei.name
         i_pos2 = elements[i].nodej.name
         if elements[i].inn == True:  G.add_edge(i_pos1, i_pos2)
-    nx.draw_networkx_edges(G, pos, edge_color='lightgrey', width=2, ax=ax, style='dashed')
+    nx.draw_networkx_edges(G, pos, edge_color='lightgrey', width=0.5, ax=ax, style='solid')
     plt.axis('off')
     plt.suptitle('Ground Structure '+draw_number, fontsize=10)
     plt.show()
@@ -51,7 +53,7 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number):
     fig.savefig(str(foldername + '/' + 'Ground Structure ' + draw_number + '.pdf'), bbox_inches='tight')
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
-def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number):
+def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_):
     # colors_list = list(['k', 'k', 'k'])
     # if s_tep == 1:
     #     colors_list = list(colors.TABLEAU_COLORS.values())
@@ -90,22 +92,25 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
         i_pos1 = burdan[i].nodei.name
         i_pos2 = burdan[i].nodej.name
         G.add_edge(i_pos1, i_pos2)
+        edge_widths.update({(i_pos1, i_pos2): 0.1})
+        edge_colors.update({(i_pos1, i_pos2): 'lightgrey'})
+    edge_colors1 = list(edge_colors.values())
+    edge_widths1 = list(edge_widths.values())
+    nx.draw_networkx_edges(G, pos, edge_color=edge_colors1, width=edge_widths1, ax=ax, alpha=0.02)
+    for i in burdan.keys():
+        i_pos1 = burdan[i].nodei.name
+        i_pos2 = burdan[i].nodej.name
+        G.add_edge(i_pos1, i_pos2)
         if i in X_dic:
             edge_widths.update({(i_pos1, i_pos2): 5 * X[i]})
             edge_colors.update({(i_pos1, i_pos2): 'k'}) # colcol
-            edge_styles.update({(i_pos1, i_pos2): 'solid'})
-        else:
-            edge_widths.update({(i_pos1, i_pos2): 0.3})
-            edge_colors.update({(i_pos1, i_pos2): 'lightgrey'})
-            edge_styles.update({(i_pos1, i_pos2): 'solid'})
-    edge_colors1 = list(edge_colors.values())
-    edge_styles1 = list(edge_styles.values())
-    edge_widths1 = list(edge_widths.values())
-    nx.draw_networkx_edges(G, pos, edge_color=edge_colors1, width=edge_widths1, ax=ax, style=edge_styles1, alpha=1)
+    edge_colors2 = list(edge_colors.values())
+    edge_widths2 = list(edge_widths.values())
+    nx.draw_networkx_edges(G, pos, edge_color=edge_colors2, width=edge_widths2, ax=ax, alpha=1)
     plt.axis('off')
     plt.suptitle('|Stime:' + str(round(t_ime, 4)) + '|Weight:' + str(round(volume, 4)) + '|R:' + str(r_ound) + '|S:' + str(s_tep) + '|I:' + str(itr), fontsize=10)
     plt.show()
     png_name = draw_number
-    fig.savefig(str(foldername+'/' + draw_number + '.pdf'), bbox_inches='tight')
+    fig.savefig(str(foldername + '/' + png_name + '.pdf'), bbox_inches='tight')
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 

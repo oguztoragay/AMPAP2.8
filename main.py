@@ -6,17 +6,17 @@ from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
 from clean_up27 import *
 
-instances = {3: (3, 3, [0, 2], [7], [0, 1])}
+instances = {9: (9, 9, [0, 8], [76], [0, 1])}
 for i in instances.keys():
-    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 1
+    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 25
     w, h, fixed, load_node, load_values = instances[i]
     today = str(datetime.date.today())
-    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + str(i) + '4/'
+    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/' + str(i) + '/1/'
     if not os.path.isdir(foldername):
         os.makedirs(foldername)
     c_f = open(foldername + 'Output_record ' + str(i) + '.txt', 'w+')
     load_values = [ll*f for f in load_values]  # Magnitude of loads in x and y directions
-    ff = max(map(abs, load_values)) /4  # Max possible stress
+    ff = max(map(abs, load_values)) /2  # Max possible stress
     GS.Generate(w, h, fixed, load_node, load_values, Wtotal, Htotal)  # Generating ground structure and pickle the GS
     f_name = str('%dx%d_ground.pickle' % (w, h))
     pickle_in = open(f_name, "rb")
