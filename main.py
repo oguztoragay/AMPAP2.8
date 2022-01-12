@@ -6,12 +6,12 @@ from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
 from clean_up27 import *
 
-instances = {9: (9, 9, [0, 8], [76], [0, 1])}
+instances = {5: (5, 5, [0, 4], [22], [1, 1])}
 for i in instances.keys():
     Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 25
     w, h, fixed, load_node, load_values = instances[i]
     today = str(datetime.date.today())
-    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/' + str(i) + '/1/'
+    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/' + str(i) + '/3/'
     if not os.path.isdir(foldername):
         os.makedirs(foldername)
     c_f = open(foldername + 'Output_record ' + str(i) + '.txt', 'w+')

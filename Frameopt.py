@@ -62,10 +62,10 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2)
         if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
             c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
-            print('az 1');  break
+            print('from condition 1');  break
         if violation(PML, Nd, st, u, vol, a, itr, c_f):
             c_f.write("Termination condition: %s\n" % 'No violating potential memeber.')
-            print('az 2');  break
+            print('from condition 2');  break
     f_name = str('%dx%d_results.pickle' % (wt, ht))
     pickle_out = open(f_name, "wb")
     pickle.dump([step1_results['Cn'], step1_results['a'], step1_results['u'], step1_results['PML'], step1_results['volume'], step1_results['Nd']], pickle_out)
