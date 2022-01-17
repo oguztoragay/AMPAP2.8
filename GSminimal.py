@@ -19,7 +19,7 @@ class Generate:  # Ground structure generator
         width = Wtotal;     height = Htotal;     PML = []
         poly = Polygon([(0, 0), (width, 0), (width, height), (0, height)])
         convex = True if poly.convex_hull.area == poly.area else False
-        xv, yv = np.meshgrid([x * (width / (wt - 1)) for x in range(wt)], [y * (height / (wt - 1)) for y in range(ht)])
+        xv, yv = np.meshgrid([x * (width / (wt - 1)) for x in range(wt)], [y * (height / (ht - 1)) for y in range(ht)])
         xv = xv.flatten(); yv = yv.flatten()
         Nd = np.vstack((xv, yv, np.arange(len(xv)))).T
         name_iter = -1
@@ -157,7 +157,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
             added_y = temp_node[1]
             temp_list.append(temp_node)
             for j in remained_nodes:
-                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 3:
+                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 4:
                     temp_list.append(j)
                     mored += 1
                     added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
@@ -179,7 +179,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
             added_y = temp_node[1]
             temp_list.append(temp_node)
             for j in remained_nodes:
-                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 3:
+                if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 1:
                     temp_list.append(j)
                     mored1 += 1
                     added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)

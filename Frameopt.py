@@ -44,7 +44,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
                     PML_modified[i].inn = True
         PML = {int(PML_modified[d].name): PML_modified[d] for d in PML_modified.keys()}
         volume_ = picpic[4]
-    general_darw(Nd, PML, [], 0, 0,  foldername, 0, 0, 0, 1)
+    general_darw(Nd, PML, [], 0, 0,  foldername, 0, 0, 0, 1, wt, ht)
     volume = [100000]
     results_key = ['volume', 'a', 'u', 'Cn', 'Nd', 'PML']
     step1_results = dict.fromkeys(results_key)
@@ -59,7 +59,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         volume.append(vol)
         c_f.write("---> Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         print("Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
-        general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2)
+        general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2, wt, ht)
         if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
             c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
             print('from condition 1');  break

@@ -1,22 +1,25 @@
+#### Updated on 01/14/2022
 import os
 import datetime
+import pickle
 import GSminimal as GS
 from GM25 import evaluate_result
 from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
-from clean_up27 import *
+# from clean_up27 import *
+from DRAW import general_darw
 
-instances = {5: (5, 5, [0, 4], [22], [1, 1])}
+instances = {33:(3, 11, [0,1,2], [31], [1, 0])}
 for i in instances.keys():
-    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 25
+    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 1
     w, h, fixed, load_node, load_values = instances[i]
     today = str(datetime.date.today())
-    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/' + str(i) + '/3/'
+    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/meeting/' + str(i) + '/1/'
     if not os.path.isdir(foldername):
         os.makedirs(foldername)
     c_f = open(foldername + 'Output_record ' + str(i) + '.txt', 'w+')
     load_values = [ll*f for f in load_values]  # Magnitude of loads in x and y directions
-    ff = max(map(abs, load_values)) /2  # Max possible stress
+    ff = max(map(abs, load_values)) /0.5  # Max possible stress
     GS.Generate(w, h, fixed, load_node, load_values, Wtotal, Htotal)  # Generating ground structure and pickle the GS
     f_name = str('%dx%d_ground.pickle' % (w, h))
     pickle_in = open(f_name, "rb")
@@ -41,11 +44,13 @@ for i in instances.keys():
             new_ground = pickle.load(pickle_in)
             Nd = new_ground[0]
             PML = new_ground[1]
-        elif nna == 0 and mm_tabu_list[-2] != mm_tabu_list[-1]:
+        elif nna == 0 and mm_tabu_list[-1] != mm_tabu_list[-2]:  # mm_tabu_list[-2] != mm_tabu_list[-1]
             r_ound += 1
+            # GS.re_Generate(w, h, fixed, load_node, load_values, ff, foldername, remained_nodes, tabu_list, nna)
             continue
         else:
             stop = True
+            # general_darw(Nd, step_results['Cn'], step_results['a'], step_results['volume'], 0, foldername, 0, 0, 1, 2, w, h)
             print(mm_tabu_list)
             print('This is the end of process')
     c_f.close()

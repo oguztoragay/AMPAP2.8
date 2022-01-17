@@ -23,10 +23,10 @@ def geometry_extraction(Cn, a, PML, Nd):
     # inputs from the previous ground structure and the solution of previous round
     lines = []
     shap_node = set()
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.001)}  # lines to be checked for intersections
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.01)}  # lines to be checked for intersections
     index_for_not_in = []
     for i in index_for_in:
-        if index_for_in[i] > 0.01:
+        if index_for_in[i] > 0.1:
             node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
             node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
             line_to_add = geometry.LineString([node_x, node_y])
@@ -70,7 +70,7 @@ def new_node_coords(Nd, lines, PML, shap_node, tabu_list, index_for_not_in):
     mm_node = 0
     mm_tabu = 0
     for i in crossing_lines_shapely.items():
-        if i[1][3] > 3:
+        if i[1][3] > 1:
             mored[mm_node] = list(i[1][2])
             mm_node += 1
             remained_nodes.append([i[1][2][0], i[1][2][1], 0, 3, 1, 0])
