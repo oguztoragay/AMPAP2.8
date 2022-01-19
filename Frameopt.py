@@ -50,11 +50,11 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
     step1_results = dict.fromkeys(results_key)
     for itr in range(1, 50):
         Cn = dict(filter(lambda elem: elem[1].inn == True, PML.items()))
-        print('Total mems: %d, Itr: %d, mems: %d' % (len(PML.keys()), itr, len(Cn)))
-        c_f.write('\nTotal mems in GS: %d, Itr: %d, mems in reduced GS: %d' % (len(PML.keys()), itr, len(Cn)))
+        print('Total elements in PML: %d, Itr: %d, selected elements: %d' % (len(PML.keys()), itr, len(Cn)))
+        c_f.write('\nTotal elements in GS: %d, Itr: %d, Elements in reduced GS: %d' % (len(PML.keys()), itr, len(Cn)))
         vol, a, u, data1, timer = nlp(Nd, Cn, st, 'ipopt')
-        if vol < volume[-1]:
-            step1_results.update({'volume': vol, 'a': a, 'u': u, 'Cn': Cn, 'Nd': Nd, 'PML': PML})
+        # if vol < volume[-1]:
+        step1_results.update({'volume': vol, 'a': a, 'u': u, 'Cn': Cn, 'Nd': Nd, 'PML': PML})
         c_f.write("\nModel generation total time: %f\n" % round(timer.timers['all'].total_time, 3))
         volume.append(vol)
         c_f.write("---> Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
@@ -63,11 +63,12 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
             c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
             print('from condition 1');  break
-        if violation(PML, Nd, st, u, vol, a, itr, c_f):
+        vio_check = violation(PML, Nd, st, u, vol, a, itr, c_f)
+        if vio_check == 0:
             c_f.write("Termination condition: %s\n" % 'No violating potential memeber.')
             print('from condition 2');  break
     f_name = str('%dx%d_results.pickle' % (wt, ht))
     pickle_out = open(f_name, "wb")
     pickle.dump([step1_results['Cn'], step1_results['a'], step1_results['u'], step1_results['PML'], step1_results['volume'], step1_results['Nd']], pickle_out)
     pickle_out.close()
-    return step1_results
+    return step1_results, vio_check

@@ -10,7 +10,7 @@ def evaluate_result(w, h, tabu_list):
     pickle_in = open(f_name, "rb")
     sol = pickle.load(pickle_in)
     Cn = sol[0]; a = sol[1]; u = sol[2]; PML = sol[3]; Nd = sol[5]
-    shap_node, lines, hull, index_for_not_in = geometry_extraction(Cn, a, PML, Nd)
+    shap_node, lines,  index_for_not_in = geometry_extraction(Cn, a, PML, Nd)  # hull,
     remained_nodes, nna, mm_tabu, PML, tabu_list = new_node_coords(Nd, lines, PML, shap_node, tabu_list, index_for_not_in)
     # remained_nodes, removed_nodes_list = \
     # remained_nodes,  mm = clean_nodes(remained_nodes, nna)
@@ -23,27 +23,28 @@ def geometry_extraction(Cn, a, PML, Nd):
     # inputs from the previous ground structure and the solution of previous round
     lines = []
     shap_node = set()
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.01)}  # lines to be checked for intersections
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.05)}  # lines to be checked for intersections
     index_for_not_in = []
     for i in index_for_in:
-        if index_for_in[i] > 0.1:
-            node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
-            node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
-            line_to_add = geometry.LineString([node_x, node_y])
-            line_to_add.r = index_for_in[i]
-            lines.append(line_to_add)
-            shap_node.add((node_x[0], node_x[1]))
-            shap_node.add((node_y[0], node_y[1]))
-        else:
-            index_for_not_in.append(i)
+        # if index_for_in[i] > 0.12:
+        node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
+        node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
+        line_to_add = geometry.LineString([node_x, node_y])
+        line_to_add.r = index_for_in[i]
+        lines.append(line_to_add)
+        shap_node.add((node_x[0], node_x[1]))
+        shap_node.add((node_y[0], node_y[1]))
+        # else:
+        #     mehdi = 2
+            # index_for_not_in.append(i)
     shap_node = [Point(i) for i in shap_node]
-    multi_line = geometry.MultiLineString([i for i in lines])
-    merged_line = ops.linemerge(multi_line)
-    hull = merged_line.convex_hull
-    for i in Nd.keys():
-        Nd[i].inside = int(hull.contains(Point([Nd[i].x, Nd[i].y])) or hull.touches(Point([Nd[i].x, Nd[i].y])))
-        Nd[i].base = 1
-    return shap_node, lines, hull, index_for_not_in
+    # multi_line = geometry.MultiLineString([i for i in lines])
+    # merged_line = ops.linemerge(multi_line)
+    # hull = merged_line.convex_hull
+    # for i in Nd.keys():
+    #     Nd[i].inside = int(hull.contains(Point([Nd[i].x, Nd[i].y])) or hull.touches(Point([Nd[i].x, Nd[i].y])))
+    #     Nd[i].base = 1
+    return shap_node, lines, index_for_not_in   # hull,
 
 def new_node_coords(Nd, lines, PML, shap_node, tabu_list, index_for_not_in):
     for i in index_for_not_in:
@@ -53,7 +54,7 @@ def new_node_coords(Nd, lines, PML, shap_node, tabu_list, index_for_not_in):
     print('Number of lines after clean-up: %d' % (len(lines)))
     remained_nodes = []
     for i in Nd.keys():
-        remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].load, Nd[i].tip, Nd[i].inside, Nd[i].base])
+        remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].load, Nd[i].tip, 1, 1])
     crossing_lines_shapely = {}
     inters_idx = 0
     for i, j in itertools.combinations(lines, 2):

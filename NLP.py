@@ -54,18 +54,14 @@ def nlp(Nd, Cn, smax, solver_name):
     for satr in m.free:
         m.ps = set(Nd[np.floor(satr / 3)].where) & m.LE
         temp1 = 0
-        # print(satr)
         for i in m.ps:
             b_one = Cn[i].B[0].toarray().flatten();            b_one_index = np.asarray(b_one.nonzero()).flatten()
             b_two = Cn[i].B[1].toarray().flatten();            b_two_index = np.asarray(b_two.nonzero()).flatten()
             b_thr = Cn[i].B[2].toarray().flatten();            b_thr_index = np.asarray(b_thr.nonzero()).flatten()
-            # print([satr, i, np.count_nonzero(b_one), np.count_nonzero(b_two), np.count_nonzero(b_three)])
             temp1 += (Cn[i].KE[0] * m.a[i] ** 1) * (b_one[satr] * sum(b_one[di0] * m.d[di0] for di0 in b_one_index)) + \
                      (Cn[i].KE[1] * m.a[i] ** 2) * (b_two[satr] * sum(b_two[di1] * m.d[di1] for di1 in b_two_index)) + \
                      (Cn[i].KE[2] * m.a[i] ** 2) * (b_thr[satr] * sum(b_thr[di2] * m.d[di2] for di2 in b_thr_index))
-        # print(temp1 == f[satr])
         m.cons1.add(temp1 - f[satr] == 0)
-        # m.cons1.add(temp1 - f[satr] >= 0)
     timer.stop('Cons1')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     timer.start('Cons2')
@@ -121,9 +117,9 @@ def nlp(Nd, Cn, smax, solver_name):
     # if itr > 1:
     #     m.ipopt_zL_in.update(m.ipopt_zL_out)
     #     m.ipopt_zU_in.update(m.ipopt_zU_out)
-    solver.options['warm_start_init_point'] = 'yes'
-    solver.options['warm_start_bound_push'] = 1e-6
-    solver.options['warm_start_mult_bound_push'] = 1e-6
+    # solver.options['warm_start_init_point'] = 'yes'
+    # solver.options['warm_start_bound_push'] = 1e-6
+    # solver.options['warm_start_mult_bound_push'] = 1e-6
     # solver.options['mu_init'] = 1e-6
     # solver.options['warm_start_entire_iterate'] = 'yes'
     # solver.options['mu_strategy'] = 'adaptive'
@@ -133,12 +129,12 @@ def nlp(Nd, Cn, smax, solver_name):
     solver.options['print_frequency_iter'] = 100
     solver.options['least_square_init_primal'] = 'yes'
     solver.options['least_square_init_duals'] = 'yes'
-    NLPstart = time.time()
+    # NLPstart = time.time()
     solution = solver.solve(m, tee=False, keepfiles=True)
     # m.ipopt_zL_out = Suffix(direction=Suffix.IMPORT)
     # m.ipopt_zU_out = Suffix(direction=Suffix.IMPORT)
-    TNLP = np.round(time.time()-NLPstart, 3)
-    data1_nlp = solution.Problem._list
+    # TNLP = np.round(time.time()-NLPstart, 3)
+    # data1_nlp = solution.Problem._list
     data1_nlp = {}
     data1_nlp['Time'] = solution.solver[0]['Time']
     print("Time: %f, Termination: %s, Obj. Value: %f" % (np.round(solution.solver[0]['Time'], 4), solution.solver[0]['Termination condition'], value(m.z)))
