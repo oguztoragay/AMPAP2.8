@@ -17,21 +17,9 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         gs_past = picpic[0]
         gs_past_bounds = [gs_past[i].bounds for i in gs_past.keys()]
         gs_past_bounds_set = set(map(tuple, gs_past_bounds))
-        # picpic_modified = {tuple(gs_past[d].bounds): gs_past[d] for d in gs_past.keys()}
-        # picpic_modified_key_list = [i for i in picpic_modified.keys()]
-
-
         PML_modified_bounds = [PML[i].bounds for i in PML.keys()]
         PML_modified_bounds_set = set(map(tuple, PML_modified_bounds))
-
-
         PML_modified = {tuple(PML[d].bounds): PML[d] for d in PML.keys()}
-        # PML_modified_key_list = [i for i in PML_modified.keys()]
-        # hala = PML_modified_bounds_set.symmetric_difference(gs_past_bounds_set)
-        # ssss = len(hala)
-        # remained_from_prev = set(picpic_modified_key_list) & set(PML_modified_key_list)
-        # remained_from_prev = set(map(tuple, gs_past_bounds)) & set(map(tuple, PML_modified_bounds))
-        # my_list = [ii for ii in picpic_modified_key_list for jj in PML_modified_key_list if ((ii[0]==jj[0]) and (ii[1]==jj[1]) and (ii[2]==jj[2]) and (ii[3]==jj[3]))]
         remained_ground_bound = PML_modified_bounds_set & gs_past_bounds_set
         for p in remained_ground_bound:
             PML_modified[p].inn = True
@@ -40,7 +28,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         for new_nd in new_added_nodes:
             ori_ = Nd[new_nd].coord
             for i in PML_modified.keys():
-                if ori_ == (i[0], i[1]) or ori_ == (i[2], i[3]):
+                if (ori_ == (i[0], i[1]) or ori_ == (i[2], i[3])):  # and PML_modified[i].length < 20
                     PML_modified[i].inn = True
         PML = {int(PML_modified[d].name): PML_modified[d] for d in PML_modified.keys()}
         volume_ = picpic[4]

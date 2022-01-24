@@ -40,7 +40,7 @@ def nlp(Nd, Cn, smax, solver_name):
     m.d = Var(m.dofs, initialize=0, bounds=(-m.dmax, m.dmax))
     for i in m.nfree:
         m.d[i].fix(0)
-    m.a = Var(m.LE, bounds=(0, m.amax), initialize=m.amax)
+    m.a = Var(m.LE, bounds=(0, m.amax), initialize=m.amax/2)
     m.le = Param(m.LE, rule=lerule)
     m.M = Param(initialize=1000000)
     # --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -64,17 +64,17 @@ def nlp(Nd, Cn, smax, solver_name):
         m.cons1.add(temp1 - f[satr] == 0)
     timer.stop('Cons1')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
-    timer.start('Cons2')
-    m.cons2 = ConstraintList()
-    for i in m.LE:
-        dofz = Cn[i].dof
-        d_list = [m.d[i] for i in dofz]
-        lenprime = ((d_list[3] + Cn[i].nodej.x) - (d_list[0] + Cn[i].nodei.x)) ** 2 + (
-            (d_list[4] + Cn[i].nodej.y) - (d_list[1] + Cn[i].nodei.y)) ** 2
-        strain = (lenprime**0.5 - Cn[i].length) / Cn[i].length
-        m.cons2.add((strain*m.E) - smax <= 0)
-        m.cons2.add((strain*m.E) + smax >= 0)
-    timer.stop('Cons2')
+    # timer.start('Cons2')
+    # m.cons2 = ConstraintList()
+    # for i in m.LE:
+    #     dofz = Cn[i].dof
+    #     d_list = [m.d[i] for i in dofz]
+    #     lenprime = ((d_list[3] + Cn[i].nodej.x) - (d_list[0] + Cn[i].nodei.x)) ** 2 + (
+    #         (d_list[4] + Cn[i].nodej.y) - (d_list[1] + Cn[i].nodei.y)) ** 2
+    #     strain = (lenprime**0.5 - Cn[i].length) / Cn[i].length
+    #     m.cons2.add((strain*m.E) - smax <= 0)
+    #     m.cons2.add((strain*m.E) + smax >= 0)
+    # timer.stop('Cons2')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('Cons3')
     # m.cons3 = Constraint(expr=m.z <= limit)

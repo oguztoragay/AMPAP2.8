@@ -8,8 +8,6 @@ from My_count import count
 def general_darw(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, which_one, wt, ht):
     ss = str(general_darw.counter)
     draw_number = ss.zfill(5)
-    # size_ = (np.sqrt(len(nodes.keys())), np.sqrt(len(nodes.keys())))
-    # size_ = (10, 10)
     size_ = (wt, ht)
     if which_one == 1:
         Draw_GROUND_dashed(nodes, celements, foldername, draw_number, size_)
@@ -86,7 +84,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     edge_c = {}
     shum = 0
     for i in celements.keys():
-        if i in X_dic and X[i] > 0.1:
+        if i in X_dic and X[i] > 0:
             shum += 1
             i_pos1 = celements[i].nodei.name
             i_pos2 = celements[i].nodej.name

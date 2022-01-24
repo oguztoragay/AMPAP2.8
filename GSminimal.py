@@ -61,7 +61,7 @@ class Generate:  # Ground structure generator
         pickle.dump([self.nodes, self.celements], pickle_out)
         pickle_out.close()
         mytime = round((myfinish - mystart), 4)
-        print('Ground Structure is Generated in %d seconds.' % mytime)
+        # print('Ground Structure is Generated in %d seconds.' % mytime)
 # --------------------------------------------------------------------------------------
 class Node:
     def __init__(self, node_name, x, y, tip, load_value):
@@ -144,82 +144,25 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
         convex = True
         xv = []; yv = []
         node_names = []
-        # sss = []
-        # mored = 0
-        # new_generated_nodes = []
-        # while len(remained_nodes):
-        #     temp_list = []
-        #     temp_node = remained_nodes.pop(0)
-        #     added_x = temp_node[0]
-        #     added_y = temp_node[1]
-        #     temp_list.append(temp_node)
-        #     for j in remained_nodes:
-        #         if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 4:
-        #             temp_list.append(j)
-        #             mored += 1
-        #             added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
-        #             added_y = np.mean([temp_list[i][1] for i in range(len(temp_list))], axis=0)
-        #             remained_nodes.pop(remained_nodes.index(j))
-        #             new_generated_nodes.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
-        #     sss.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
-        # # remained_nodes = [tuple(sss[i]) for i in range(len(sss))]
-        # # # uniq_animal_groups = map(list, set(map(tuple, animal_groups)))
-        # # remained_nodes = map(list, set([remained_nodes]))
-        # remained_nodes = sss
-        # sss1 = []
-        # mored1 = 0
-        # new_generated_nodes1 = []
-        # while len(remained_nodes):
-        #     temp_list = []
-        #     temp_node = remained_nodes.pop(0)
-        #     added_x = temp_node[0]
-        #     added_y = temp_node[1]
-        #     temp_list.append(temp_node)
-        #     for j in remained_nodes:
-        #         if np.sqrt((temp_node[0] - j[0])**2 + (temp_node[1] - j[1])**2) < 1:
-        #             temp_list.append(j)
-        #             mored1 += 1
-        #             added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
-        #             added_y = np.mean([temp_list[i][1] for i in range(len(temp_list))], axis=0)
-        #             remained_nodes.pop(remained_nodes.index(j))
-        #             new_generated_nodes1.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
-        #     sss1.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
-        # # remained_nodes = [tuple(sss[i]) for i in range(len(sss))]
-        # # # uniq_animal_groups = map(list, set(map(tuple, animal_groups)))
-        # # remained_nodes = map(list, set([remained_nodes]))
-        # remained_nodes = sss1
         for i in remained_nodes:
             # if i[4]:
             xv.append(i[0])
             yv.append(i[1])
             node_names.append([remained_nodes.index(i), i[3], i[2]])
-        # xv = xv.flatten(); yv = yv.flatten()
         name_iter = -1
         Nd = np.vstack((xv, yv, np.arange(len(xv)))).T
-        # tabu_list = [tabu_list[i].bounds for i in tabu_list.keys()]
-        # print(tabu_list)
         for i, j in itertools.combinations(range(len(Nd)), 2):
-            # t_abu = list(np.concatenate([Nd[i][:2], Nd[j][:2]]))
-            # if t_abu in tabu_list:
-            #     print('... times of tabu', t_abu)
-            #     continue
-            # else:
             dx, dy = abs(Nd[i][0] - Nd[j][0]), abs(Nd[i][1] - Nd[j][1])
             angle = np.rint(math.degrees(math.atan2(dy, dx)))
             if gcd(int(dx), int(dy)) <= int(10):
-                # or (angle == 0 and dx <= 10)
                 if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= 10) or \
                         ((angle == 45 or angle == 135) and dx <= 10):
                     seg = [] if convex else LineString([Nd[i], Nd[j]])
-                    if convex:#or poly.contains(seg) or poly.boundary.contains(seg)
+                    if convex:
                         name_iter += 1
                         PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter])
         PML = np.array(PML)
         remrem2 = {}
-        # for i in remrem1:
-        #     k1 = [j1[2] for j1 in Nd if i[0][0] == j1[0] and i[0][1] == j1[1]]
-        #     k2 = [j2[2] for j2 in Nd if i[1][0] == j2[0] and i[1][1] == j2[1]]
-        #     remrem2[k1[0], k2[0]] = i[2]
         self.nodes = {}  # Dictionary of Node instances to be filled
         self.celements = {}  # Dictionary of continuous Element instances to be filled
         for i in range(len(Nd)):
@@ -242,4 +185,4 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
         pickle.dump([self.nodes, self.celements], pickle_out)
         pickle_out.close()
         mytime = round((myfinish1 - mystart1), 4)
-        print('Ground Structure is Updated in %d seconds.' % mytime)
+        # print('Ground Structure is Updated in %d seconds.' % mytime)

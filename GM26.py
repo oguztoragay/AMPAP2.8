@@ -5,20 +5,19 @@ import numpy as np
 import itertools
 import pickle
 
-def evaluate_result(w, h):
+def evaluate_result(w, h, r_ound):
     f_name = str('%dx%d_results.pickle' % (w, h))
     pickle_in = open(f_name, "rb")
     sol = pickle.load(pickle_in)
     Cn = sol[0]; a = sol[1]; u = sol[2]; PML = sol[3]; Nd = sol[5]
-    sh_nodes, sh_lines = shapely_geometry_extraction(Cn, a, Nd)
-    remained_nodes, nna = new_node_coords(Nd, sh_lines)
+    sh_nodes, sh_lines = shapely_geometry_extraction(Cn, a, Nd, r_ound)
+    remained_nodes, nna = new_node_coords(Nd, sh_lines, r_ound)
     return remained_nodes, nna
 
-def shapely_geometry_extraction(Cn, a, Nd):
-    # inputs from the previous ground structure and the solution of previous round
+def shapely_geometry_extraction(Cn, a, Nd, r_ound):
     sh_lines = []
     sh_nodes = set()
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.1)}  # lines to be checked for intersections
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.12)}  # lines to be checked for intersections
     for i in index_for_in:
         node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
         node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
@@ -30,13 +29,14 @@ def shapely_geometry_extraction(Cn, a, Nd):
     sh_nodes = [Point(i) for i in sh_nodes]
     return sh_nodes, sh_lines
 
-def new_node_coords(Nd, sh_lines):
+def new_node_coords(Nd, sh_lines, r_ound):
     print('Number of lines before clean-up: %d' % (len(sh_lines)))
     sh_lines = clean_remaining_lines(sh_lines)
     print('Number of lines after clean-up: %d' % (len(sh_lines)))
     remained_nodes = []
     for i in Nd.keys():
-        remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].load, Nd[i].tip, 1, 1])
+        if Nd[i].tip < 3:
+            remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].load, Nd[i].tip, 1, 1])
     crossing_lines = {}
     inters_idx = 0
     for i, j in itertools.combinations(sh_lines, 2):
@@ -44,13 +44,16 @@ def new_node_coords(Nd, sh_lines):
         touch = i.touches(j)
         if insect == True and touch == False:
             inter_sect_coord = i.intersection(j).coords[0]
-            crossing_lines[inters_idx] = (i, j, i.intersection(j).coords[0])
-            inters_idx += 1
+            inter_sect_coord = [np.round(i,1) for i in inter_sect_coord]
+            faseleha = [np.sqrt((inter_sect_coord[0]-Nd[i].coord[0])**2 + (inter_sect_coord[1]-Nd[i].coord[1])**2) for i in Nd.keys()]
+            val, idx = min((val, idx) for (idx, val) in enumerate(faseleha))
+            if val > 0.5:
+                crossing_lines[inters_idx] = (i, j, i.intersection(j).coords[0])
+                inters_idx += 1
     for i in crossing_lines:
         remained_nodes.append([crossing_lines[i][2][0], crossing_lines[i][2][1], 0, 3, 0, 0])
-    remained_nodes = clean_remaining_nodes(remained_nodes)
-
-    return remained_nodes, inters_idx
+    remained_nodes, nna = clean_remaining_nodes(remained_nodes)
+    return remained_nodes, nna
 
 def clean_remaining_nodes(x):
     print('Number of nodes before clean-up: %d' % (len(x)))
@@ -71,7 +74,7 @@ def clean_remaining_nodes(x):
         temp_list.append(temp_node)
         for jj in temp_list:
             for j in newly_added_nodes:
-                if np.sqrt((jj[0] - j[0]) ** 2 + (jj[1] - j[1]) ** 2) < 3:
+                if np.sqrt((jj[0] - j[0]) ** 2 + (jj[1] - j[1]) ** 2) < 2:
                     temp_list.append(j)
                     newly_added_nodes.pop(newly_added_nodes.index(j))
                     # combined.append(jj)
@@ -85,24 +88,27 @@ def clean_remaining_nodes(x):
     mored1 = 0
     new_generated_nodes1 = []
     while len(remained_nodes):
-        temp_list = []
+        # temp_list = []
         temp_node = remained_nodes.pop(0)
-        added_x = temp_node[0]
-        added_y = temp_node[1]
-        temp_list.append(temp_node)
-        for j in remained_nodes:
-            if np.sqrt((temp_node[0] - j[0]) ** 2 + (temp_node[1] - j[1]) ** 2) < 1:
-                temp_list.append(j)
-                mored1 += 1
-                added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
-                added_y = np.mean([temp_list[i][1] for i in range(len(temp_list))], axis=0)
-                remained_nodes.pop(remained_nodes.index(j))
-                new_generated_nodes1.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
-        sss1.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
-    remained_nodes = main_gs_nodes + sss1
+        # added_x = temp_node[0]
+        # added_y = temp_node[1]
+        # temp_list.append(temp_node)
+        # for j in main_gs_nodes:
+        if any([True for j in main_gs_nodes if np.sqrt((temp_node[0] - j[0]) ** 2 + (temp_node[1] - j[1]) ** 2) < 1]):
+            break
+        else:
+            new_generated_nodes1.append(temp_node)
+                # temp_list.append(j)
+                # mored1 += 1
+                # added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
+                # added_y = np.mean([temp_list[i][1] for i in range(len(temp_list))], axis=0)
+                # remained_nodes.pop(remained_nodes.index(j))
+                # new_generated_nodes1.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
+        # sss1.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
+    remained_nodes = main_gs_nodes + new_generated_nodes1
     print('Number of nodes after clean-up: %d' % (len(remained_nodes)))
     print('aaaaaaaaaaaa   MORED  aaaaaaaaaaaaaaaaaaaa', mored1)
-    return remained_nodes
+    return remained_nodes, len(remained_nodes) - len(x)
 
 def clean_remaining_lines(x):
     remove = []
