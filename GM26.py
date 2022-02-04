@@ -44,7 +44,7 @@ def new_node_coords(Nd, sh_lines, r_ound):
         touch = i.touches(j)
         if insect == True and touch == False:
             inter_sect_coord = i.intersection(j).coords[0]
-            inter_sect_coord = [np.round(i,1) for i in inter_sect_coord]
+            inter_sect_coord = [np.round(i, 1) for i in inter_sect_coord]
             faseleha = [np.sqrt((inter_sect_coord[0]-Nd[i].coord[0])**2 + (inter_sect_coord[1]-Nd[i].coord[1])**2) for i in Nd.keys()]
             val, idx = min((val, idx) for (idx, val) in enumerate(faseleha))
             if val > 0.5:

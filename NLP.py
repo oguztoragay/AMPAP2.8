@@ -40,7 +40,7 @@ def nlp(Nd, Cn, smax, solver_name):
     m.d = Var(m.dofs, initialize=0, bounds=(-m.dmax, m.dmax))
     for i in m.nfree:
         m.d[i].fix(0)
-    m.a = Var(m.LE, bounds=(0, m.amax), initialize=m.amax/2)
+    m.a = Var(m.LE, bounds=(0, m.amax), initialize=m.amax)
     m.le = Param(m.LE, rule=lerule)
     m.M = Param(initialize=1000000)
     # --------------------------------------------------------------------------------------------------------------------------------------------------

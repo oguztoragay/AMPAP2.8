@@ -8,18 +8,18 @@ from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
 from DRAW import general_darw
 
-instances = {210: (3, 7, [0, 1, 2], [18], [1, 0])}
+instances = {2111: (11, 21, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [230], [1, 0])}
 
 for i in instances.keys():
-    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 30  # ll:Load magnitude
+    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 50  # ll:Load magnitude
     w, h, fixed, load_node, load_values = instances[i]
     today = str(datetime.date.today())
-    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/toplanti/' + str(i) + '/19/'
+    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/toplanti/' + str(i) + '/1/'
     if not os.path.isdir(foldername):
         os.makedirs(foldername)
     c_f = open(foldername + 'Output_record ' + str(i) + '.txt', 'w+')
     load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
-    ff = max(map(abs, load_values)) / 100  # Max possible stress
+    ff = max(map(abs, load_values)) / 1  # Max possible stress
     # -------- Generating the ground structure from which the base GS will be selected ----------
     GS.Generate(w, h, fixed, load_node, load_values, Wtotal, Htotal)
     f_name = str('%dx%d_ground.pickle' % (w, h))
@@ -48,6 +48,9 @@ for i in instances.keys():
             PML = new_ground[1]
         else:
             stop = True
+            # step1_results.update({'volume': vol, 'a': a, 'u': u, 'Cn': Cn, 'Nd': Nd, 'PML': PML})
+            # general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2, wt, ht)
+            # general_darw(step_results['Nd'], step_results['PML'], step_results['a'], step_results['volume'], 0, foldername, 0, r_ound, 1, 3, w, h)
             print('This is the end of process')
     c_f.close()
     make_gif_for_me(foldername)
