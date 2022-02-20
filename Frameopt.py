@@ -6,7 +6,13 @@ import pickle
 import itertools
 
 def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
-    index_for_in = {k: v for k, v in PML.items() if (v.length <= (Wtotal / (wt - 1)) * (np.sqrt(2)) and v.okay)}.keys() # minimal GS is chosen here (only neighbur nodes)
+    index_for_in1 = {k: v for k, v in PML.items() if (v.length <= (Wtotal / (wt - 1)) and v.okay)}.keys()  # minimal GS is chosen here (only neighbur nodes) * (np.sqrt(2))
+    load_node = [i for i in Nd if Nd[i].tip == 2]
+    index_for_in2 = {k: v for k, v in PML.items() if (v.orient[0] in load_node or v.orient[1] in load_node)}.keys()  # minimal GS is chosen here (only neighbur nodes)
+    fix_nodes = [i for i in Nd if Nd[i].tip == 1]
+    index_for_in3 = {k: v for k, v in PML.items() if (v.orient[0] in fix_nodes or v.orient[1] in fix_nodes)}.keys()  # minimal GS is chosen here (only neighbur nodes)
+    alldict = [index_for_in1, index_for_in2, index_for_in3]
+    index_for_in = set().union(*alldict)
     if r_ound == 1:
         for p in index_for_in:
             PML[p].inn = True
@@ -28,11 +34,11 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         for new_nd in new_added_nodes:
             ori_ = Nd[new_nd].coord
             for i in PML_modified.keys():
-                if (ori_ == (i[0], i[1]) or ori_ == (i[2], i[3])):  # and PML_modified[i].length < 20
+                if (ori_ == (i[0], i[1]) or ori_ == (i[2], i[3])):  #and PML_modified[i].length < 20
                     PML_modified[i].inn = True
         PML = {int(PML_modified[d].name): PML_modified[d] for d in PML_modified.keys()}
         volume_ = picpic[4]
-    general_darw(Nd, PML, [], 0, 0,  foldername, 0, 0, 0, 1, wt, ht)
+    general_darw(Nd, PML, [], 0, 0,  foldername, 0, 0, 0, 1, wt, ht, 0)
     volume = [100000]
     results_key = ['volume', 'a', 'u', 'Cn', 'Nd', 'PML']
     step1_results = dict.fromkeys(results_key)
@@ -47,7 +53,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         volume.append(vol)
         c_f.write("---> Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         print("Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
-        general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2, wt, ht)
+        general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2, wt, ht, u)
         if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
             c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
             print('from condition 1');  break

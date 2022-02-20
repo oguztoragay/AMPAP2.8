@@ -27,9 +27,7 @@ class Generate:  # Ground structure generator
             dx, dy = abs(Nd[i][0] - Nd[j][0]), abs(Nd[i][1] - Nd[j][1])
             angle = np.rint(math.degrees(math.atan2(dy, dx)))
             if gcd(int(dx), int(dy)) <= int(width / (wt - 1)):  # (angle == 0 and dx <= width / (wt - 1)) or \
-                if 45 < angle < 90 or 90 < angle < 135 or \
-                        (angle == 90 and dy <= height / (ht - 1)) or \
-                        ((angle == 45 or angle == 135) and dx <= width / (wt - 1)):
+                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= height / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= width / (wt - 1)):
                     seg = [] if convex else LineString([Nd[i], Nd[j]])
                     if convex or poly.contains(seg) or poly.boundary.contains(seg):
                         name_iter += 1
@@ -39,13 +37,13 @@ class Generate:  # Ground structure generator
         self.celements = {}  # Dictionary of continuous Element instances to be filled
         for i in range(len(Nd)):
             if i in load_nodes:
-                l_n = 2;                l_v = load_values
+                l_n = 2;                l_v = load_values    # Tip for load_nodes = 2
             elif i in fix_nodes:
-                l_n = 1;                l_v = 0
+                l_n = 1;                l_v = 0    # Tip for fix_nodes = 1
             elif i > wt*ht:
-                l_n = 3;                l_v = 0
+                l_n = 3;                l_v = 0    # Tip for added_nodes = 3
             else:
-                l_n = 0;                l_v = 0
+                l_n = 0;                l_v = 0    # Tip for normal nodes = 0
             self.nodes[i] = Node(i, Nd[i][0], Nd[i][1], l_n, l_v)
         totalnode = len(self.nodes)
         pml = 0
@@ -138,29 +136,30 @@ class CElement:
         return False
 # --------------------------------------------------------------------------------------
 class re_Generate:  # Ground structure generator after adding the new nodes and removing the ones which are not inside the convex-hull from "GM".
-    def __init__(self, wt, ht, fix_nodes, load_nodes, load_values, ff, foldername, remained_nodes, tabu_list, nna):
+    def __init__(self, wt, ht, fix_nodes, load_nodes, load_values, ff, foldername, remained_nodes, tabu_list, nna, Wtotal, Htotal):
         mystart1 = time.time()
         PML = []
         convex = True
         xv = []; yv = []
         node_names = []
         for i in remained_nodes:
-            # if i[4]:
             xv.append(i[0])
             yv.append(i[1])
-            node_names.append([remained_nodes.index(i), i[3], i[2]])
+            node_names.append([remained_nodes.index(i), i[2], i[3]])
+            # remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].tip, Nd[i].load])
         name_iter = -1
         Nd = np.vstack((xv, yv, np.arange(len(xv)))).T
         for i, j in itertools.combinations(range(len(Nd)), 2):
             dx, dy = abs(Nd[i][0] - Nd[j][0]), abs(Nd[i][1] - Nd[j][1])
             angle = np.rint(math.degrees(math.atan2(dy, dx)))
-            if gcd(int(dx), int(dy)) <= int(10):
-                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= 10) or \
-                        ((angle == 45 or angle == 135) and dx <= 10):
-                    seg = [] if convex else LineString([Nd[i], Nd[j]])
-                    if convex:
-                        name_iter += 1
-                        PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter])
+            lenlen = np.sqrt(dx**2+dy**2)
+            if gcd(int(dx), int(dy)) <= int(Wtotal / (wt - 1)):
+                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= Htotal / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= Wtotal / (wt - 1)):
+                    if lenlen > 5:
+                        seg = [] if convex else LineString([Nd[i], Nd[j]])
+                        if convex:
+                            name_iter += 1
+                            PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter])
         PML = np.array(PML)
         remrem2 = {}
         self.nodes = {}  # Dictionary of Node instances to be filled

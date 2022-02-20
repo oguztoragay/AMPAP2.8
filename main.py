@@ -6,21 +6,22 @@ import GSminimal as GS
 from GM26 import evaluate_result
 from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
-from DRAW import general_darw
-
-instances = {2111: (11, 21, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [230], [1, 0])}
-
+# -------------------------------------------------------------------
+instances = {65: (13, 5, [0, 12], [4,8], [0, -1])}
+# -------------------------------------------------------------------
 for i in instances.keys():
-    Wtotal = 10*(instances[i][0]-1);  Htotal = 10*(instances[i][1]-1);  ll = 50  # ll:Load magnitude
+    Wtotal = 120  # 10*(instances[i][0]-1)
+    Htotal = 40  # 10*(instances[i][1]-1)
+    ll = 1  # ll:Load magnitude
     w, h, fixed, load_node, load_values = instances[i]
     today = str(datetime.date.today())
-    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/toplanti/' + str(i) + '/1/'
+    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/' + str(i) + '/tamrin5/'
     if not os.path.isdir(foldername):
         os.makedirs(foldername)
     c_f = open(foldername + 'Output_record ' + str(i) + '.txt', 'w+')
     load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
     ff = max(map(abs, load_values)) / 1  # Max possible stress
-    # -------- Generating the ground structure from which the base GS will be selected ----------
+# -------- Generating the ground structure from which the base GS will be selected ----------
     GS.Generate(w, h, fixed, load_node, load_values, Wtotal, Htotal)
     f_name = str('%dx%d_ground.pickle' % (w, h))
     pickle_in = open(f_name, "rb")
@@ -40,7 +41,7 @@ for i in instances.keys():
         if nna != 0:
             print('------------------------------------------------  ', nna)
             r_ound += 1
-            GS.re_Generate(w, h, fixed, load_node, load_values, ff, foldername, remained_nodes, tabu_list, nna)
+            GS.re_Generate(w, h, fixed, load_node, load_values, ff, foldername, remained_nodes, tabu_list, nna, Wtotal, Htotal)
             f_name = str('%dx%d_ground.pickle' % (w, h))
             pickle_in = open(f_name, "rb")
             new_ground = pickle.load(pickle_in)
@@ -73,3 +74,12 @@ for i in instances.keys():
 # 45: (5, 9, [0, 1, 3, 4], [42], [1, 0])
 # 77: (7, 11, [0, 1, 5, 6], [73], [1, 0])
 # 140: (7, 20, [0, 1, 2, 3, 4, 5, 6], [136], [0, 1])
+
+# ------------------- Experiments for the paper:
+# 9: (3, 3, [0, 2], [7], [0, 1]) # don't forget to check the size
+# 16: (4, 4, [0, 3], [14], [0, 1]) # don't forget to check the size
+# 25: (5, 5, [0, 4], [22], [0, 1]) # don't forget to check the size
+# 45: (5, 9, [1, 3], [42], [1, 0])
+# 121: (11, 11, list(range(0, 10, 2)), [65], [1, 1])
+# 65: (13, 5, [0,12], [4,8], [0, -1])
+

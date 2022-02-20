@@ -10,62 +10,57 @@ def evaluate_result(w, h, r_ound):
     pickle_in = open(f_name, "rb")
     sol = pickle.load(pickle_in)
     Cn = sol[0]; a = sol[1]; u = sol[2]; PML = sol[3]; Nd = sol[5]
-    sh_nodes, sh_lines = shapely_geometry_extraction(Cn, a, Nd, r_ound)
-    remained_nodes, nna = new_node_coords(Nd, sh_lines, r_ound)
+    sh_nodes, sh_lines, sap = shapely_geometry_extraction(Cn, a, Nd, r_ound)
+    remained_nodes, nna = new_node_coords(Nd, sh_nodes, sh_lines, r_ound, sap)
     return remained_nodes, nna
 
 def shapely_geometry_extraction(Cn, a, Nd, r_ound):
     sh_lines = []
     sh_nodes = set()
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.12)}  # lines to be checked for intersections
+    pas = []
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.03)}  # lines to be checked for intersections
     for i in index_for_in:
         node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
         node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
+        pas.append(Cn[i].orient)
         line_to_add = geometry.LineString([node_x, node_y])
         line_to_add.r = index_for_in[i]
         sh_lines.append(line_to_add)
-    for i in Nd:
+    sap = [j[i] for i in [0, 1] for j in pas]
+    sap = set(sap)
+    for i in sap:
         sh_nodes.add(Nd[i].coord)
     sh_nodes = [Point(i) for i in sh_nodes]
-    return sh_nodes, sh_lines
+    return sh_nodes, sh_lines, sap
 
-def new_node_coords(Nd, sh_lines, r_ound):
+def new_node_coords(Nd, sh_nodes, sh_lines, r_ound, sap):
     print('Number of lines before clean-up: %d' % (len(sh_lines)))
     sh_lines = clean_remaining_lines(sh_lines)
     print('Number of lines after clean-up: %d' % (len(sh_lines)))
     remained_nodes = []
-    for i in Nd.keys():
-        if Nd[i].tip < 3:
-            remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].load, Nd[i].tip, 1, 1])
+    for i in Nd.keys():  # sap: to remove the nodes which are not connected to the structure (keeping only the ones inside stress trajectory)
+        remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].tip, Nd[i].load])
     crossing_lines = {}
     inters_idx = 0
     for i, j in itertools.combinations(sh_lines, 2):
-        insect = i.intersects(j)
-        touch = i.touches(j)
-        if insect == True and touch == False:
-            inter_sect_coord = i.intersection(j).coords[0]
-            inter_sect_coord = [np.round(i, 1) for i in inter_sect_coord]
-            faseleha = [np.sqrt((inter_sect_coord[0]-Nd[i].coord[0])**2 + (inter_sect_coord[1]-Nd[i].coord[1])**2) for i in Nd.keys()]
-            val, idx = min((val, idx) for (idx, val) in enumerate(faseleha))
-            if val > 0.5:
-                crossing_lines[inters_idx] = (i, j, i.intersection(j).coords[0])
-                inters_idx += 1
+        if i.intersects(j):
+            if ~i.touches(j):
+                inter_sect_coord = i.intersection(j).coords[0]
+                inter_sect_coord = [np.round(i, 1) for i in inter_sect_coord]
+                faseleha = [np.sqrt((inter_sect_coord[0]-Nd[i].coord[0])**2 + (inter_sect_coord[1]-Nd[i].coord[1])**2) for i in Nd.keys()]
+                val, idx = min((val, idx) for (idx, val) in enumerate(faseleha))
+                if val > 1:
+                    crossing_lines[inters_idx] = (i, j, i.intersection(j).coords[0])
+                    inters_idx += 1
     for i in crossing_lines:
-        remained_nodes.append([crossing_lines[i][2][0], crossing_lines[i][2][1], 0, 3, 0, 0])
-    remained_nodes, nna = clean_remaining_nodes(remained_nodes)
+        remained_nodes.append([crossing_lines[i][2][0], crossing_lines[i][2][1], 3, 0])
+    remained_nodes, nna = clean_remaining_nodes(Nd, remained_nodes)
     return remained_nodes, nna
 
-def clean_remaining_nodes(x):
+def clean_remaining_nodes(Nd, x):
     print('Number of nodes before clean-up: %d' % (len(x)))
-    y = []
-    main_gs_nodes = []
-    newly_added_nodes = []
-    for i in x:
-        if i[3] != 3:
-            y.append(i)
-            main_gs_nodes.append(i)
-        else:
-            newly_added_nodes.append(i)
+    main_gs_nodes = [i for i in x if i[2] != 3]
+    newly_added_nodes = [i for i in x if i[2] == 3]
     sss = []
     while len(newly_added_nodes):
         combined = []
@@ -82,7 +77,7 @@ def clean_remaining_nodes(x):
                 # mored += 1
         added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)
         added_y = np.mean([temp_list[i][1] for i in range(len(temp_list))], axis=0)
-        sss.append([added_x, added_y, temp_node[2], temp_node[3], temp_node[4]])
+        sss.append([added_x, added_y, temp_node[2], temp_node[3]])
     remained_nodes = sss
     sss1 = []
     mored1 = 0
@@ -94,7 +89,7 @@ def clean_remaining_nodes(x):
         # added_y = temp_node[1]
         # temp_list.append(temp_node)
         # for j in main_gs_nodes:
-        if any([True for j in main_gs_nodes if np.sqrt((temp_node[0] - j[0]) ** 2 + (temp_node[1] - j[1]) ** 2) < 1]):
+        if any([True for j in main_gs_nodes if np.sqrt((temp_node[0] - j[0]) ** 2 + (temp_node[1] - j[1]) ** 2) < 0.01]):
             break
         else:
             new_generated_nodes1.append(temp_node)
@@ -108,7 +103,7 @@ def clean_remaining_nodes(x):
     remained_nodes = main_gs_nodes + new_generated_nodes1
     print('Number of nodes after clean-up: %d' % (len(remained_nodes)))
     print('aaaaaaaaaaaa   MORED  aaaaaaaaaaaaaaaaaaaa', mored1)
-    return remained_nodes, len(remained_nodes) - len(x)
+    return remained_nodes, len(remained_nodes) - len(Nd)
 
 def clean_remaining_lines(x):
     remove = []
