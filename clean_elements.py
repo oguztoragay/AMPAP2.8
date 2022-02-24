@@ -53,18 +53,24 @@ def clean_elements1(w, h):
     poped = 0
     remove_list = []
     for node_ in Nd.keys():
-        K = [i for i in Nd[node_].where if (PML[i] and node_ == PML[i].orient[0])]
-        angles = [PML[i].angle for i in K]
-        for dup in list_duplicates(angles):
-            mored = {Nd[node_].where[i]: PML[Nd[node_].where[i]].length for i in dup}
-            s_list = list(dict(sorted(mored.items(), key=operator.itemgetter(1), reverse=True)).keys())[:-1]
-            for k in s_list:
-                remove_list.append(k)
-                # PML.pop(k)
-            # PML.pop(s for s in s_list)
+        tip = Nd[node_].tip
+        # which = 1 if tip == 3 else 0
+        K1 = [i for i in Nd[node_].where if (node_ == PML[i].orient[0])]  # element starts from node_
+        K2 = [i for i in Nd[node_].where if (node_ == PML[i].orient[1])]  # element ends in node_
+        Kall = [K1, K2]
+        for i in range(2):
+            K = Kall[i]
+            angles = [PML[i].angle for i in K]
+            for dup in list_duplicates(angles):
+                inha = [K[i] for i in dup]
+                mored = {i: PML[i].length for i in inha}
+                s_list = list(dict(sorted(mored.items(), key=operator.itemgetter(1), reverse=True)).keys())[:-1]
+                for k in s_list:
+                    remove_list.append(k)
+    remove_list = list(set(remove_list))
     for i in remove_list:
         PML.pop(i)
-    return Nd, PML
+    return Nd, PML, remove_list
 def list_duplicates(seq):
     tally = defaultdict(list)
     for i, item in enumerate(seq):

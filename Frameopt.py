@@ -5,7 +5,7 @@ from Violation import violation
 import pickle
 import itertools
 
-def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
+def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound, hazf):
     index_for_in1 = {k: v for k, v in PML.items() if (v.length <= (Wtotal / (wt - 1)) and v.okay)}.keys()  # minimal GS is chosen here (only neighbur nodes) * (np.sqrt(2))
     load_node = [i for i in Nd if Nd[i].tip == 2]
     index_for_in2 = {k: v for k, v in PML.items() if (v.orient[0] in load_node or v.orient[1] in load_node)}.keys()  # minimal GS is chosen here (only neighbur nodes)
@@ -20,24 +20,35 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         f_name = str('%dx%d_results.pickle' % (wt, ht))
         pickle_in_update = open(f_name, "rb")
         picpic = pickle.load(pickle_in_update)
-        gs_past = picpic[0]
-        gs_past_bounds = [gs_past[i].bounds for i in gs_past.keys()]
-        gs_past_bounds_set = set(map(tuple, gs_past_bounds))
-        PML_modified_bounds = [PML[i].bounds for i in PML.keys()]
-        PML_modified_bounds_set = set(map(tuple, PML_modified_bounds))
-        PML_modified = {tuple(PML[d].bounds): PML[d] for d in PML.keys()}
-        remained_ground_bound = PML_modified_bounds_set & gs_past_bounds_set
-        for p in remained_ground_bound:
-            PML_modified[p].inn = True
-        PML_additional = []
+        # gs_past = picpic[0]
+        # gs_past_bounds = [gs_past[i].bounds for i in gs_past.keys()]
+        # gs_past_bounds_set = set(map(tuple, gs_past_bounds))
+        # PML_modified_bounds = [PML[i].bounds for i in PML.keys()]
+        # PML_modified_bounds_set = set(map(tuple, PML_modified_bounds))
+        # PML_modified = {tuple(PML[d].bounds): PML[d] for d in PML.keys()}
+        # remained_ground_bound = PML_modified_bounds_set & gs_past_bounds_set
+        # for p in remained_ground_bound:
+        #     PML_modified[p].inn = True
+        # PML_additional = []
+        # new_added_nodes = {x1: x2 for x1, x2 in Nd.items() if (Nd[x1].tip == 3)}.keys()
+        # for new_nd in new_added_nodes:
+        #     list_ = {}
+        #     ori_ = Nd[new_nd].coord
+        #     for i in PML_modified.keys():
+        #         if ori_ == (i[0], i[1]) or ori_ == (i[2], i[3]):
+        #             # if PML_modified[i].optim == 1:
+        #             PML_modified[i].inn = True
         new_added_nodes = {x1: x2 for x1, x2 in Nd.items() if (Nd[x1].tip == 3)}.keys()
         for new_nd in new_added_nodes:
-            list_ = {}
-            ori_ = Nd[new_nd].coord
-            for i in PML_modified.keys():
-                if ori_ == (i[0], i[1]) or ori_ == (i[2], i[3]):
-                    # if PML_modified[i].optim == 1:
-                    PML_modified[i].inn = True
+            ori_ = list(set(Nd[new_nd].where) - set(hazf))
+            for i in ori_:
+                PML[i].inn = True
+        for p in index_for_in:
+            PML[p].inn = True
+
+
+
+
             #         else:
             #             list_[i] = PML_modified[i]
             #     else:
@@ -46,7 +57,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
             # for j in range(int(len(new_nd_added_elem)/1)):
             #     ss = new_nd_added_elem[j][0]
             #     PML_modified[ss].inn = True
-        PML = {int(PML_modified[d].name): PML_modified[d] for d in PML_modified.keys()}
+        # PML = {int(PML_modified[d].name): PML_modified[d] for d in PML_modified.keys()}
         volume_ = picpic[4]
     general_darw(Nd, PML, [], 0, 0,  foldername, 0, 0, 0, 1, wt, ht, 0)
     volume = [100000]

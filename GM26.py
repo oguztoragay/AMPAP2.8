@@ -18,7 +18,7 @@ def shapely_geometry_extraction(Cn, a, Nd, r_ound):
     sh_lines = []
     sh_nodes = set()
     pas = []
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.03)}  # lines to be checked for intersections
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.05)}  # lines to be checked for intersections
     for i in index_for_in:
         node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
         node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]

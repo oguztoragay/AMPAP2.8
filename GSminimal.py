@@ -9,6 +9,7 @@ from shapely.geometry import Point, LineString, Polygon
 import math
 import pickle
 import time
+from operator import itemgetter
 dim = 2;    ndof = 3
 
 __all__ = ['Generate', 'Node', 'CElement', 're_Generate']
@@ -144,6 +145,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
         convex = True
         xv = []; yv = []
         node_names = []
+        remained_nodes = sorted(remained_nodes, key=itemgetter(1, 0))
         for i in remained_nodes:
             xv.append(i[0])
             yv.append(i[1])
@@ -156,8 +158,6 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
             # angle = np.rint(math.degrees(math.atan2(dy, dx)))
             angle = np.rint(math.degrees(math.atan2(Nd[j][1] - Nd[i][1], Nd[j][0] - Nd[i][0])))
             lenlen = np.sqrt(dx**2+dy**2)
-            # if Nd[i][3] == 3 or Nd[j][3] == 3: lenlen_limit = 15
-            # else: lenlen_limit = 1000
             if gcd(int(dx), int(dy)) <= int(Wtotal / (wt - 1)):
                 if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= Htotal / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= Wtotal / (wt - 1)):
                     # if lenlen <= lenlen_limit:
@@ -166,7 +166,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
                         name_iter += 1
                         PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter, angle])
         PML = np.array(PML)
-        remrem2 = {}
+        # remrem2 = {}
         self.nodes = {}  # Dictionary of Node instances to be filled
         self.celements = {}  # Dictionary of continuous Element instances to be filled
         for i in range(len(Nd)):
@@ -174,11 +174,11 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
         totalnode = len(self.nodes)
         pml = 0
         for i in PML:
-            if (i[0], i[1]) in remrem2:
-                kaka = remrem2[(i[0], i[1])]
-            else:
-                kaka = 0
-            temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], kaka, i[-1]) #has_key([i[0], i[1]]
+            # if (i[0], i[1]) in remrem2:
+            #     kaka = remrem2[(i[0], i[1])]
+            # else:
+            #     kaka = 0
+            temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], 0, i[-1]) #has_key([i[0], i[1]]
             self.nodes[i[0]].where.append(pml)
             self.nodes[i[1]].where.append(pml)
             self.celements[pml] = temp_celement

@@ -12,7 +12,7 @@ def general_darw(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_
     a0 = 0
     if which_one == 1:
         Draw_GROUND_dashed(nodes, celements, foldername, draw_number, size_, a0)
-    elif which_one ==2:
+    elif which_one == 2:
         Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u)
     else:
         Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u)
@@ -56,7 +56,7 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number, size_, a0):
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.01]
+    X_dic = [i for i, k in X.items() if k > 0.05]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -73,10 +73,12 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     fig, ax = plt.subplots(figsize=size_)
     G = nx.Graph()
     pos = {}
+    node_names = {}
     node_colors = []
     for i in nodes.keys():
         G.add_node(i)
         pos.update({i: [nodes[i].x, nodes[i].y]})
+        node_names.update({i: nodes[i].name})
         if nodes[i].tip == 1:  # boundary
             node_colors.append('b')
         elif nodes[i].tip == 2:  # load point
@@ -87,7 +89,8 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
         else:
             if i in node_list: node_colors.append('k')
             else: node_colors.append('lightgrey')
-    nx.draw_networkx_nodes(G, pos, node_color=node_colors, alpha=1, node_size=30, node_shape='o', linewidths=0)
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, alpha=1, node_size=5, node_shape='o', linewidths=0)
+    nx.draw_networkx_labels(G, pos, node_names)
     ## Drawing the Edges ----------------------------
     edge_w = {}
     edge_c = {}
@@ -120,7 +123,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     fig.savefig(str(foldername + '/' + png_name + '.pdf'), bbox_inches='tight')
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
-def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_):
+def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
     X_dic = [i for i, k in X.items() if k > 0.01]
     nodeset1 = []
     nodeset2 = []

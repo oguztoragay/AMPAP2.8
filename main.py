@@ -36,17 +36,17 @@ for i in instances.keys():
     c_f.write('<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n')
     tabu_list = {}
     mm_tabu_list = [0]
+    hazf = []
     while not stop:  # While loop begins here and continues until stop == True
-        step_results, vio = frameopt(Nd, PML, ff, foldername, Wtotal, w, h, c_f, r_ound)
+        step_results, vio = frameopt(Nd, PML, ff, foldername, Wtotal, w, h, c_f, r_ound, hazf)
         remained_nodes, nna = evaluate_result(w, h, r_ound)
-        # mm_tabu_list.append(len(tabu_list))
         print('\n<><><><><><><><><><><><><><><>( Round: %d )<><><><><><><><><><><><><><><>\n' % r_ound)
         c_f.write('\n<><><><><><><><><><><><><><><>( Round: %d )<><><><><><><><><><><><><><><>\n\n' % r_ound)
         if nna != 0:
             print('------------------------------------------------  ', nna)
             r_ound += 1
             GS.re_Generate(w, h, fixed, load_node, load_values, ff, foldername, remained_nodes, tabu_list, nna, Wtotal, Htotal)
-            Nd, PML = clean_elements1(w, h)
+            Nd, PML, hazf = clean_elements1(w, h)
         else:
             stop = True
             c_f.write('<><><><><><><><><><><><><><>< Results Report ><><><><><><><><><><><><><><>\n')
@@ -58,7 +58,7 @@ for i in instances.keys():
             new_length = {}
             c_f.write('\n<><><><><><><><><><><><><><>< Elements Report ><><><><><><><><><><><><><><>\n')
             for i in step_results['a'].keys():
-                if step_results['a'][i] > 0.1:
+                if step_results['a'][i] > 0.05:
                     orient = step_results['PML'][i].orient
                     dal = [step_results['u'][j] for j in orient]
                     dal = functools.reduce(operator.iconcat, dal, [])
