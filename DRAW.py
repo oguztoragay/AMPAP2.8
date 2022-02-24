@@ -56,7 +56,7 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number, size_, a0):
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.03]
+    X_dic = [i for i, k in X.items() if k > 0.01]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -121,7 +121,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_):
-    X_dic = [i for i, k in X.items() if k > 0.1]
+    X_dic = [i for i, k in X.items() if k > 0.01]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -152,7 +152,7 @@ def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, 
     edge_c = {}
     shum = 0
     for i in celements.keys():
-        if i in X_dic and X[i] > 0.1:
+        if i in X_dic and X[i] > 0.12:
             shum += 1
             i_pos1 = celements[i].nodei.name
             i_pos2 = celements[i].nodej.name

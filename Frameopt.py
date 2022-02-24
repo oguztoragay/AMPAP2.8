@@ -32,10 +32,20 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound):
         PML_additional = []
         new_added_nodes = {x1: x2 for x1, x2 in Nd.items() if (Nd[x1].tip == 3)}.keys()
         for new_nd in new_added_nodes:
+            list_ = {}
             ori_ = Nd[new_nd].coord
             for i in PML_modified.keys():
-                if (ori_ == (i[0], i[1]) or ori_ == (i[2], i[3])):  #and PML_modified[i].length < 20
+                if ori_ == (i[0], i[1]) or ori_ == (i[2], i[3]):
+                    # if PML_modified[i].optim == 1:
                     PML_modified[i].inn = True
+            #         else:
+            #             list_[i] = PML_modified[i]
+            #     else:
+            #         continue
+            # new_nd_added_elem = sorted(list_.items(), key=lambda x:x[1].length, reverse=True)
+            # for j in range(int(len(new_nd_added_elem)/1)):
+            #     ss = new_nd_added_elem[j][0]
+            #     PML_modified[ss].inn = True
         PML = {int(PML_modified[d].name): PML_modified[d] for d in PML_modified.keys()}
         volume_ = picpic[4]
     general_darw(Nd, PML, [], 0, 0,  foldername, 0, 0, 0, 1, wt, ht, 0)

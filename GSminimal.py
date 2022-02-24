@@ -25,13 +25,14 @@ class Generate:  # Ground structure generator
         name_iter = -1
         for i, j in itertools.combinations(range(len(Nd)), 2):
             dx, dy = abs(Nd[i][0] - Nd[j][0]), abs(Nd[i][1] - Nd[j][1])
-            angle = np.rint(math.degrees(math.atan2(dy, dx)))
+            # angle = np.rint(math.degrees(math.atan2(dy, dx)))
+            angle = np.rint(math.degrees(math.atan2(Nd[j][1] - Nd[i][1], Nd[j][0] - Nd[i][0])))
             if gcd(int(dx), int(dy)) <= int(width / (wt - 1)):  # (angle == 0 and dx <= width / (wt - 1)) or \
                 if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= height / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= width / (wt - 1)):
                     seg = [] if convex else LineString([Nd[i], Nd[j]])
                     if convex or poly.contains(seg) or poly.boundary.contains(seg):
                         name_iter += 1
-                        PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter])
+                        PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter, angle])
         PML = np.array(PML)
         self.nodes = {}  # Dictionary of Node instances to be filled
         self.celements = {}  # Dictionary of continuous Element instances to be filled
@@ -48,7 +49,7 @@ class Generate:  # Ground structure generator
         totalnode = len(self.nodes)
         pml = 0
         for i in PML:
-            temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], 0)
+            temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], 0, i[-1])
             self.nodes[i[0]].where.append(pml)
             self.nodes[i[1]].where.append(pml)
             self.celements[pml] = temp_celement
@@ -87,7 +88,7 @@ class Node:
         return True
 # --------------------------------------------------------------------------------------
 class CElement:
-    def __init__(self, nodei, nodej, totalnode, name, li):
+    def __init__(self, nodei, nodej, totalnode, name, li, angle):
         E = 109000
         self.nodei = nodei;        self.nodej = nodej
         self.tip = 0;        self.okay = 1;         self.optim = li
@@ -114,6 +115,7 @@ class CElement:
         self.KE = [ke1, ke2, ke3]
         self.B = csr_matrix([b1g.T.flatten(), b2g.T.flatten(), b3g.T.flatten()])
         self.inn = self._inn
+        self.angle = angle
 
     @property
     def _length(self):
@@ -148,18 +150,21 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
             node_names.append([remained_nodes.index(i), i[2], i[3]])
             # remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].tip, Nd[i].load])
         name_iter = -1
-        Nd = np.vstack((xv, yv, np.arange(len(xv)))).T
+        Nd = np.vstack((xv, yv, np.arange(len(xv)), [x[1] for x in node_names])).T
         for i, j in itertools.combinations(range(len(Nd)), 2):
             dx, dy = abs(Nd[i][0] - Nd[j][0]), abs(Nd[i][1] - Nd[j][1])
-            angle = np.rint(math.degrees(math.atan2(dy, dx)))
+            # angle = np.rint(math.degrees(math.atan2(dy, dx)))
+            angle = np.rint(math.degrees(math.atan2(Nd[j][1] - Nd[i][1], Nd[j][0] - Nd[i][0])))
             lenlen = np.sqrt(dx**2+dy**2)
+            # if Nd[i][3] == 3 or Nd[j][3] == 3: lenlen_limit = 15
+            # else: lenlen_limit = 1000
             if gcd(int(dx), int(dy)) <= int(Wtotal / (wt - 1)):
                 if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= Htotal / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= Wtotal / (wt - 1)):
-                    if lenlen > 5:
-                        seg = [] if convex else LineString([Nd[i], Nd[j]])
-                        if convex:
-                            name_iter += 1
-                            PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter])
+                    # if lenlen <= lenlen_limit:
+                    seg = [] if convex else LineString([Nd[i], Nd[j]])
+                    if convex:
+                        name_iter += 1
+                        PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter, angle])
         PML = np.array(PML)
         remrem2 = {}
         self.nodes = {}  # Dictionary of Node instances to be filled
@@ -173,7 +178,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
                 kaka = remrem2[(i[0], i[1])]
             else:
                 kaka = 0
-            temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], kaka) #has_key([i[0], i[1]]
+            temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], kaka, i[-1]) #has_key([i[0], i[1]]
             self.nodes[i[0]].where.append(pml)
             self.nodes[i[1]].where.append(pml)
             self.celements[pml] = temp_celement

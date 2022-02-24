@@ -8,8 +8,10 @@ def make_gif_for_me(foldername):
     for i in list_of_pngs:
         new_frame = Image.open(i)
         frames.append(new_frame)
-    pngname = str(foldername+'loopinggif.gif')
-    frames[0].save(pngname, format='GIF', append_images=frames[1:], save_all=True, duration=2000, loop=0)
+    pngname1 = str(foldername + 'loopinggif.gif')
+    pngname2 = str(foldername + 'Noopinggif.gif')
+    frames[0].save(pngname1, format='GIF', append_images=frames[1:], save_all=True, duration=2000, loop=0)
+    frames[0].save(pngname2, format='GIF', append_images=frames[1:], save_all=True, duration=2000, loop=1)
     return 0
 # foldername = 'C:/Users/ozt0008/Desktop/rere/meeting/2021-09-22/11'
 # make_gif_for_me(foldername)
