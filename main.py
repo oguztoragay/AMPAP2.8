@@ -11,18 +11,22 @@ import functools
 import operator
 from clean_elements import clean_elements1
 # -------------------------------------------------------------------
-instances = {25: (5, 5, [0, 4], [22], [0, 1])}
+instances = {651: (5, 13, [0, 60], [20, 40], [-1, 0])}
+load_magnit = list(range(260, 501, 20))
 # -------------------------------------------------------------------
-for i in instances.keys():
-    Wtotal = 50 # 10*(instances[i][0]-1)
-    Htotal = 50  # 10*(instances[i][1]-1)
-    ll = 450 # ll:Load magnitude
-    w, h, fixed, load_node, load_values = instances[i]
+for ins in instances.keys():
+    # for l in load_magnit:
+    if ins < 45: Wtotal = 40; Htotal = 40
+    else:
+        Wtotal = 10*(instances[ins][0]-1)
+        Htotal = 10*(instances[ins][1]-1)
+    ll = 75 # ll:Load magnitude
+    w, h, fixed, load_node, load_values = instances[ins]
     today = str(datetime.date.today())
-    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/tamrin_baade_meeting/' + str(i) + '/1/'
+    foldername = 'C:/Users/ozt0008/Desktop/rere/' + today + '/Experiments_prepration/' + str(ins) + '/load75/'
     if not os.path.isdir(foldername):
         os.makedirs(foldername)
-    c_f = open(foldername + 'Output_record ' + str(i) + '.txt', 'w+')
+    c_f = open(foldername + 'Output_record ' + str(ins) + '.txt', 'w+')
     load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
     ff = max(map(abs, load_values)) / 1  # Max possible stress
 # -------- Generating the ground structure from which the base GS will be selected ----------
@@ -32,7 +36,7 @@ for i in instances.keys():
     ground1 = pickle.load(pickle_in)
     Nd = ground1[0];    PML = ground1[1];    r_ound = 1;    stop = False
     c_f.write('<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n')
-    c_f.write('0000000000000  (Instance: %d, Load: %d)  0000000000000\n' % (i, ll))
+    c_f.write('0000000000000  (Instance: %d, Load: %d)  0000000000000\n' % (ins, ll))
     c_f.write('<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n')
     tabu_list = {}
     mm_tabu_list = [0]
@@ -94,4 +98,5 @@ for i in instances.keys():
 # 45: (5, 9, [1, 3], [42], [1, 0])
 # 121: (11, 11, list(range(0, 11, 2)), [115], [1, 1])
 # 65: (13, 5, [0, 12], [4, 8], [0, -1])
+# 78: (26, 3, [0, 25], [13], [0, -1])
 

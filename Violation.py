@@ -20,10 +20,10 @@ def violation(PML, Nd, st, u, vol, a, itr, c_f):
         stress[i] = (elongation[i] / UCn[i].length) * 109000
         bunabax[i] = (elongation[i] / UCn[i].length)
     vioCn1 = {k: v for k, v in stress.items() if (v > st or v < -st)}
-    vioCn2 = {k: v for k, v in elongation.items() if (v > 0.001 or v < -0.001)}
+    vioCn2 = {k: v for k, v in elongation.items() if (v > 0.01 or v < -0.01)}
     vioCn3 = elongation
     vioCn4 = bunabax
-    vioCn_abs = {k: abs(v) for k, v in vioCn1.items()}
+    vioCn_abs = {k: abs(v) for k, v in vioCn4.items()}
     vioSort = dict(sorted(vioCn_abs.items(), key=operator.itemgetter(1), reverse=True))
     num = ceil(min(len(vioSort), 0.1*len(PML), 100))
     c_f.write("Iter: %d, violate: %d, selected: %d\n" % (itr, len(vioSort.keys()), num))

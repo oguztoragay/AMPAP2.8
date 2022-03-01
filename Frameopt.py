@@ -20,15 +20,15 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound, hazf):
         f_name = str('%dx%d_results.pickle' % (wt, ht))
         pickle_in_update = open(f_name, "rb")
         picpic = pickle.load(pickle_in_update)
-        # gs_past = picpic[0]
-        # gs_past_bounds = [gs_past[i].bounds for i in gs_past.keys()]
-        # gs_past_bounds_set = set(map(tuple, gs_past_bounds))
-        # PML_modified_bounds = [PML[i].bounds for i in PML.keys()]
-        # PML_modified_bounds_set = set(map(tuple, PML_modified_bounds))
-        # PML_modified = {tuple(PML[d].bounds): PML[d] for d in PML.keys()}
-        # remained_ground_bound = PML_modified_bounds_set & gs_past_bounds_set
-        # for p in remained_ground_bound:
-        #     PML_modified[p].inn = True
+        gs_past = picpic[0]
+        gs_past_bounds = [gs_past[i].bounds for i in gs_past.keys()]
+        gs_past_bounds_set = set(map(tuple, gs_past_bounds))
+        PML_modified_bounds = [PML[i].bounds for i in PML.keys()]
+        PML_modified_bounds_set = set(map(tuple, PML_modified_bounds))
+        PML_modified = {tuple(PML[d].bounds): PML[d] for d in PML.keys()}
+        remained_ground_bound = PML_modified_bounds_set & gs_past_bounds_set
+        for p in remained_ground_bound:
+            PML_modified[p].inn = True
         # PML_additional = []
         # new_added_nodes = {x1: x2 for x1, x2 in Nd.items() if (Nd[x1].tip == 3)}.keys()
         # for new_nd in new_added_nodes:
@@ -43,8 +43,8 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound, hazf):
             ori_ = list(set(Nd[new_nd].where) - set(hazf))
             for i in ori_:
                 PML[i].inn = True
-        for p in index_for_in:
-            PML[p].inn = True
+        # for p in index_for_in:
+        #     PML[p].inn = True
 
 
 
@@ -75,7 +75,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound, hazf):
         c_f.write("---> Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         print("Total mems: %d, Itr: %d, mems: %d, vol: %f, time:%f, condition:%s\n" % (len(PML.keys()), itr, len(Cn), vol, np.round(data1['Time'], 3), data1['Term_con']))
         general_darw(Nd, Cn, a, vol, data1['Time'], foldername, itr, r_ound, 1, 2, wt, ht, u)
-        if abs(volume[-1]-volume[-2]) < 0.001*volume[-2]:
+        if abs(volume[-1]-volume[-2]) < 0.01*volume[-2]:
             c_f.write("Termination condition: %s\n" % 'No more reduction in the volume.')
             print('from condition 1');  break
         vio_check = violation(PML, Nd, st, u, vol, a, itr, c_f)

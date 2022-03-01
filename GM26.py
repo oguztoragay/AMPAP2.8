@@ -18,7 +18,7 @@ def shapely_geometry_extraction(Cn, a, Nd, r_ound):
     sh_lines = []
     sh_nodes = set()
     pas = []
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.05)}  # lines to be checked for intersections
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.1)}  # lines to be checked for intersections
     for i in index_for_in:
         node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
         node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
@@ -27,7 +27,7 @@ def shapely_geometry_extraction(Cn, a, Nd, r_ound):
         line_to_add.r = index_for_in[i]
         sh_lines.append(line_to_add)
     sap = [j[i] for i in [0, 1] for j in pas]
-    sap = set(sap)
+    sap = set(sap)  # set of all connection in the current solution
     for i in sap:
         sh_nodes.add(Nd[i].coord)
     sh_nodes = [Point(i) for i in sh_nodes]
@@ -38,7 +38,9 @@ def new_node_coords(Nd, sh_nodes, sh_lines, r_ound, sap):
     sh_lines = clean_remaining_lines(sh_lines)
     print('Number of lines after clean-up: %d' % (len(sh_lines)))
     remained_nodes = []
-    for i in Nd.keys():  # sap: to remove the nodes which are not connected to the structure (keeping only the ones inside stress trajectory)
+    mains = {i for i, v in Nd.items() if Nd[i].tip < 3}
+    added_from_sap = {i for i, v in Nd.items() if i in sap and Nd[i].tip == 3}
+    for i in mains.union(added_from_sap):  # sap: to remove the nodes which are not connected to the structure (keeping only the ones inside stress trajectory)
         remained_nodes.append([Nd[i].x, Nd[i].y, Nd[i].tip, Nd[i].load])
     crossing_lines = {}
     inters_idx = 0

@@ -56,7 +56,7 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number, size_, a0):
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.05]
+    X_dic = [i for i, k in X.items() if k > 0.1]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -89,8 +89,8 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
         else:
             if i in node_list: node_colors.append('k')
             else: node_colors.append('lightgrey')
-    nx.draw_networkx_nodes(G, pos, node_color=node_colors, alpha=1, node_size=5, node_shape='o', linewidths=0)
-    nx.draw_networkx_labels(G, pos, node_names)
+    nx.draw_networkx_nodes(G, pos, node_color=node_colors, alpha=1, node_size=30, node_shape='o', linewidths=0)
+    nx.draw_networkx_labels(G, pos, node_names)   # If you want to see the node numbers to analize the results
     ## Drawing the Edges ----------------------------
     edge_w = {}
     edge_c = {}
@@ -124,7 +124,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.01]
+    X_dic = [i for i, k in X.items() if k > 0.1]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:

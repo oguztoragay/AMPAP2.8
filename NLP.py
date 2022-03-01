@@ -66,17 +66,19 @@ def nlp(Nd, Cn, smax, solver_name):
         m.cons1.add(temp1 - f[satr] == 0)
     timer.stop('Cons1')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
-    # timer.start('Cons2')
-    # m.cons2 = ConstraintList()
-    # for i in m.LE:
-    #     dofz = Cn[i].dof
-    #     d_list = [m.d[i] for i in dofz]
-    #     lenprime = ((d_list[3] + Cn[i].nodej.x) - (d_list[0] + Cn[i].nodei.x)) ** 2 + (
-    #         (d_list[4] + Cn[i].nodej.y) - (d_list[1] + Cn[i].nodei.y)) ** 2
-    #     strain = (lenprime**0.5 - Cn[i].length) / Cn[i].length
-    #     m.cons2.add((strain*m.E) - smax <= 0)
-    #     m.cons2.add((strain*m.E) + smax >= 0)
-    # timer.stop('Cons2')
+    timer.start('Cons2')
+    m.cons2 = ConstraintList()
+    for i in m.LE:
+        dofz = Cn[i].dof
+        d_list = [m.d[i] for i in dofz]
+        lenprime = (((d_list[3] + Cn[i].nodej.x) - (d_list[0] + Cn[i].nodei.x)) ** 2 + (
+            (d_list[4] + Cn[i].nodej.y) - (d_list[1] + Cn[i].nodei.y)) ** 2)**0.5
+        # strain = (lenprime**0.5 - Cn[i].length) / Cn[i].length
+        # m.cons2.add((strain*m.E) - smax <= 0)
+        # m.cons2.add((strain*m.E) + smax >= 0)
+        m.cons2.add(lenprime - Cn[i].length <= 0.1 * Cn[i].length)
+        m.cons2.add(lenprime - Cn[i].length >= -0.1 * Cn[i].length)
+    timer.stop('Cons2')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('Cons3')
     # m.cons3 = Constraint(expr=m.z <= limit)
