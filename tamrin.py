@@ -2,7 +2,7 @@ import numpy as np
 from collections import Counter, OrderedDict
 import pickle
 import GSminimal as GS
-instances = {460: (13, 5, [0, 1, 2], [7], [1, 0])}
+instances = {460: (5, 13, [0, 60], [20,40], [-1, 0])}
 for i in instances.keys():
     w, h, fixed, load_node, load_values = instances[i]
     Wtotal = 10 * (instances[i][0] - 1)

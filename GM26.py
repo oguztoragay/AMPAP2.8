@@ -56,10 +56,10 @@ def new_node_coords(Nd, sh_nodes, sh_lines, r_ound, sap):
                     inters_idx += 1
     for i in crossing_lines:
         remained_nodes.append([crossing_lines[i][2][0], crossing_lines[i][2][1], 3, 0])
-    remained_nodes, nna = clean_remaining_nodes(Nd, remained_nodes)
+    remained_nodes, nna = clean_remaining_nodes(Nd, remained_nodes, len(mains.union(added_from_sap)))
     return remained_nodes, nna
 
-def clean_remaining_nodes(Nd, x):
+def clean_remaining_nodes(Nd, x, y):
     print('Number of nodes before clean-up: %d' % (len(x)))
     main_gs_nodes = [i for i in x if i[2] != 3]
     newly_added_nodes = [i for i in x if i[2] == 3]
@@ -95,6 +95,7 @@ def clean_remaining_nodes(Nd, x):
             break
         else:
             new_generated_nodes1.append(temp_node)
+            mored1 += mored1
                 # temp_list.append(j)
                 # mored1 += 1
                 # added_x = np.mean([temp_list[i][0] for i in range(len(temp_list))], axis=0)

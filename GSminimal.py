@@ -29,7 +29,7 @@ class Generate:  # Ground structure generator
             # angle = np.rint(math.degrees(math.atan2(dy, dx)))
             angle = np.rint(math.degrees(math.atan2(Nd[j][1] - Nd[i][1], Nd[j][0] - Nd[i][0])))
             if gcd(int(dx), int(dy)) <= int(width / (wt - 1)):  # (angle == 0 and dx <= width / (wt - 1)) or \
-                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= height / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= width / (wt - 1)):
+                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and round(dy, 5) <= round((height / (ht - 1)), 5)) or ((angle == 45 or angle == 135) and round(dx, 5) <= round((width / (wt - 1)), 5)):
                     seg = [] if convex else LineString([Nd[i], Nd[j]])
                     if convex or poly.contains(seg) or poly.boundary.contains(seg):
                         name_iter += 1
@@ -159,7 +159,7 @@ class re_Generate:  # Ground structure generator after adding the new nodes and 
             angle = np.rint(math.degrees(math.atan2(Nd[j][1] - Nd[i][1], Nd[j][0] - Nd[i][0])))
             lenlen = np.sqrt(dx**2+dy**2)
             if gcd(int(dx), int(dy)) <= int(Wtotal / (wt - 1)):
-                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and dy <= Htotal / (ht - 1)) or ((angle == 45 or angle == 135) and dx <= Wtotal / (wt - 1)):
+                if 45 < angle < 90 or 90 < angle < 135 or (angle == 90 and round(dy, 5) <= round(Htotal / (ht - 1), 5)) or ((angle == 45 or angle == 135) and round(dx, 5) <= round(Wtotal / (wt - 1), 5)):
                     # if lenlen <= lenlen_limit:
                     seg = [] if convex else LineString([Nd[i], Nd[j]])
                     if convex:

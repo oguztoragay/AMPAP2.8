@@ -124,7 +124,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.1]
+    X_dic = [i for i, k in X.items() if k > 0.01]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -132,49 +132,51 @@ def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, 
         nodeset2.append(celements[float(i)].nodej.name)
     node_list = list(set(nodeset1) | set(nodeset2))
     ## Drawing the Nodes ----------------------------
-    fig, ax = plt.subplots(figsize=size_)
+    fig, ax = plt.subplots(figsize=(3, 3))
     G = nx.Graph()
     pos = {}
     node_colors = []
-    for i in range(len(nodes)):
+    for i in nodes.keys():
         G.add_node(i)
-        pos.update({i: [nodes[i][0], nodes[i][1]]})
-        if nodes[i][3] == 1:  # boundary
+        pos.update({i: [nodes[i].x, nodes[i].y]})
+        if nodes[i].tip == 1:  # boundary
             node_colors.append('b')
-        elif nodes[i][3] == 2:  # load point
-            if max(nodes[i][2]) > 0 : node_colors.append('g')
-            else: node_colors.append('r')
-        elif nodes[i][3] == 3:  # added nodes
+        elif nodes[i].tip == 2:  # load point
+            if max(nodes[i].load) > 0:
+                node_colors.append('g')
+            else:
+                node_colors.append('r')
+        elif nodes[i].tip == 3:  # added nodes
             node_colors.append('lime')
         else:
-            if i in node_list: node_colors.append('k')
-            else: node_colors.append('lightgrey')
+            if i in node_list:
+                node_colors.append('k')
+            else:
+                node_colors.append('lightgrey')
     nx.draw_networkx_nodes(G, pos, node_color=node_colors, alpha=1, node_size=30, node_shape='o', linewidths=0)
     ## Drawing the Edges ----------------------------
     edge_w = {}
     edge_c = {}
     shum = 0
     for i in celements.keys():
-        if i in X_dic and X[i] > 0.12:
-            shum += 1
+        if i in X_dic and X[i] > 0.01:
             i_pos1 = celements[i].nodei.name
             i_pos2 = celements[i].nodej.name
             G.add_edge(i_pos1, i_pos2)
             edge_w.update({(i_pos1, i_pos2): 5 * X[i]})
-            edge_c.update({(i_pos1, i_pos2): 'k'})  # colcol
-        # else:
-        #     i_pos1 = celements[i].nodei.name
-        #     i_pos2 = celements[i].nodej.name
-        #     G.add_edge(i_pos1, i_pos2)
-        #     edge_w.update({(i_pos1, i_pos2): 0})
-        #     edge_c.update({(i_pos1, i_pos2): 'lightgrey'})
+            edge_c.update({(i_pos1, i_pos2): 'k'})
+        else:
+            i_pos1 = celements[i].nodei.name
+            i_pos2 = celements[i].nodej.name
+            G.add_edge(i_pos1, i_pos2)
+            edge_w.update({(i_pos1, i_pos2): 0})
+            edge_c.update({(i_pos1, i_pos2): 'lightgrey'})
     edge_c = list(edge_c.values())
     edge_w = list(edge_w.values())
     nx.draw_networkx_edges(G, pos, edge_color=edge_c, width=edge_w, ax=ax, alpha=1)
-    print('shum is:', shum)
+    # print('shum is:', shum)
     plt.axis('off')
-    plt.suptitle('|ST:' + str(round(t_ime, 4)) + '|W:' + str(round(volume, 4)) + '|R:' + str(r_ound) + '|S:' + str(s_tep) + '|I:' + str(itr), fontsize=10)
+    # plt.suptitle('|ST:' + str(round(t_ime, 4)) + '|W:' + str(round(volume, 4)) + '|R:' + str(r_ound) + '|S:' + str(s_tep) + '|I:' + str(itr), fontsize=10)
     plt.show()
-    png_name = draw_number
+    png_name = 'Final'+str(u)
     fig.savefig(str(foldername + '/' + png_name + '.pdf'), bbox_inches='tight')
-    fig.savefig(str(foldername + '/' + png_name + '.png'))

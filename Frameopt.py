@@ -14,6 +14,7 @@ def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound, hazf):
     alldict = [index_for_in1, index_for_in2, index_for_in3]
     index_for_in = set().union(*alldict)
     if r_ound == 1:
+        print(len(index_for_in))
         for p in index_for_in:
             PML[p].inn = True
     if r_ound > 1:
