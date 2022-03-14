@@ -76,8 +76,8 @@ def nlp(Nd, Cn, smax, solver_name):
         # strain = (lenprime**0.5 - Cn[i].length) / Cn[i].length
         # m.cons2.add((strain*m.E) - smax <= 0)
         # m.cons2.add((strain*m.E) + smax >= 0)
-        m.cons2.add(lenprime - Cn[i].length <= 0.1 * Cn[i].length)
-        m.cons2.add(lenprime - Cn[i].length >= -0.1 * Cn[i].length)
+        m.cons2.add(lenprime - Cn[i].length <= 0.2 * Cn[i].length)
+        m.cons2.add(lenprime - Cn[i].length >= -0.2 * Cn[i].length)
     timer.stop('Cons2')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('Cons3')

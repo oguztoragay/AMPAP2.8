@@ -8,7 +8,7 @@ from My_count import count
 def general_darw(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, which_one, wt, ht, u):
     ss = str(general_darw.counter)
     draw_number = ss.zfill(5)
-    size_ = (wt, ht)
+    size_ = (5, 9)
     a0 = 0
     if which_one == 1:
         Draw_GROUND_dashed(nodes, celements, foldername, draw_number, size_, a0)
@@ -56,7 +56,7 @@ def Draw_GROUND_dashed(nodes, elements, foldername, draw_number, size_, a0):
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.1]
+    X_dic = [i for i, k in X.items() if k > 0.05]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -90,7 +90,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
             if i in node_list: node_colors.append('k')
             else: node_colors.append('lightgrey')
     nx.draw_networkx_nodes(G, pos, node_color=node_colors, alpha=1, node_size=30, node_shape='o', linewidths=0)
-    nx.draw_networkx_labels(G, pos, node_names)   # If you want to see the node numbers to analize the results
+    # nx.draw_networkx_labels(G, pos, node_names)   # If you want to see the node numbers to analize the results
     ## Drawing the Edges ----------------------------
     edge_w = {}
     edge_c = {}
@@ -124,7 +124,7 @@ def Draw_mod(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep,
     fig.savefig(str(foldername + '/' + png_name + '.png'))
 
 def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, draw_number, size_, u):
-    X_dic = [i for i, k in X.items() if k > 0.01]
+    X_dic = [i for i, k in X.items() if k > 0.05]
     nodeset1 = []
     nodeset2 = []
     for i in X_dic:
@@ -132,7 +132,7 @@ def Draw_mod_final(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, 
         nodeset2.append(celements[float(i)].nodej.name)
     node_list = list(set(nodeset1) | set(nodeset2))
     ## Drawing the Nodes ----------------------------
-    fig, ax = plt.subplots(figsize=(3, 3))
+    fig, ax = plt.subplots(figsize=size_)
     G = nx.Graph()
     pos = {}
     node_colors = []

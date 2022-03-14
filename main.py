@@ -14,16 +14,16 @@ import operator
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {9: (3, 3, [0, 2], [7], [0, 1])}
-load_magnit = [400] #list(range(100, 401, 20))
+instances = {452: (17, 33, [4, 12], [552], [1, 0])}
+load_magnit = [10] #list(range(100, 401, 20))
 # -------------------------------------------------------------------
 for ins in instances.keys():
     results_data = {}
     for l in load_magnit:
         if ins < 45: Wtotal = 50; Htotal = 50
         else:
-            Wtotal = 10*(instances[ins][0]-1)
-            Htotal = 10*(instances[ins][1]-1)
+            Wtotal = 40 #10*(instances[ins][0]-1)
+            Htotal = 80 #10*(instances[ins][1]-1)
         ll = l # ll:Load magnitude 25
         w, h, fixed, load_node, load_values = instances[ins]
         today = str(datetime.date.today())
@@ -85,36 +85,12 @@ for ins in instances.keys():
         c_f.close()
         make_gif_for_me(foldername)
 
-# 3: (3, 3, [0, 2], [7], [0, 1])
-# 4: (4, 4, [0, 3], [13], [0, 1])
-# 5: (5, 5, [0, 4], [22], [0, 1])
-# 7: (7, 7, [0, 6], [45], [0, 1])
-# 9: (9, 9, list(range(0, 72, 9)), [44], [0, 1])
-# 9: (9, 9, list(range(0, 9, 1)), [76], [1, 0])
-# 11: (11, 11, list(range(0, 121, 11)), [65], [0, 1])
-# 15: (15, 15, list(range(0, 225, 30)), [104], [0, -1]),
-# 15: (15, 15, list(range(0, 15, 2)), [218], [1, 0])
-# 15: (15, 15, list(range(0, 61, 30)), [44], [0, -1])
-# 25: (25, 25, list(range(0, 625, 100)), [24], [0, -1])
-# 25: (25, 25, list(range(0, 25, 6)), [624], [1, 0]),
-# 25: (25, 25, list(range(0, 625, 100)), [324], [0, -1])
-# -------------------------------------------------------
-# 21: (3, 7, [0, 1, 2], [19], [1, 0])
-# 45: (5, 9, [0, 1, 3, 4], [42], [1, 0])
-# 77: (7, 11, [0, 1, 5, 6], [73], [1, 0])
-# 140: (7, 20, [0, 1, 2, 3, 4, 5, 6], [136], [0, 1])
-# 121: (11, 11, list(range(0, 11, 2)), [115], [1, 1])
-# 78: (26, 3, [0, 25], [13], [0, -1])
-
 # ------------------- Experiments for the paper:
 # 9: (3, 3, [0, 2], [7], [0, 1]) # don't forget to check the size
 # 16: (4, 4, [0, 3], [14], [0, 1]) # don't forget to check the size
 # 25: (5, 5, [0, 4], [22], [0, 1]) # don't forget to check the size
 # 450: (5, 9, [1, 3], [42], [1, 0]) # Coarse
 # 451: (9, 17, [2, 6], [148], [1, 0]) # Normal
-# 452: (9, 17, [2, 6], [148], [1, 0]) # Fine <_____________________________________________________________ change it
+# 452: (17, 33, [4, 12], [552], [1, 0]) # Fine
 # 650: (13, 5, [0, 12], [4, 8], [0, -1]) # horizontal bridge
 # 651: (5, 13, [0, 60], [20, 40], [-1, 0]) # vertical bridge
-
-
-

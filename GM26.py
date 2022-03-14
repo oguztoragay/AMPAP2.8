@@ -18,7 +18,7 @@ def shapely_geometry_extraction(Cn, a, Nd, r_ound):
     sh_lines = []
     sh_nodes = set()
     pas = []
-    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.1)}  # lines to be checked for intersections
+    index_for_in = {k: a[k] for k in Cn.keys() if (a[k] > 0.05)}  # lines to be checked for intersections
     for i in index_for_in:
         node_x = [Nd[Cn[i].orient[0]].x, Nd[Cn[i].orient[0]].y]
         node_y = [Nd[Cn[i].orient[1]].x, Nd[Cn[i].orient[1]].y]
@@ -91,7 +91,7 @@ def clean_remaining_nodes(Nd, x, y):
         # added_y = temp_node[1]
         # temp_list.append(temp_node)
         # for j in main_gs_nodes:
-        if any([True for j in main_gs_nodes if np.sqrt((temp_node[0] - j[0]) ** 2 + (temp_node[1] - j[1]) ** 2) < 0.01]):
+        if any([True for j in main_gs_nodes if np.sqrt((temp_node[0] - j[0]) ** 2 + (temp_node[1] - j[1]) ** 2) < 0.1]):
             break
         else:
             new_generated_nodes1.append(temp_node)
