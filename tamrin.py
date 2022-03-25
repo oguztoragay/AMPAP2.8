@@ -2,7 +2,7 @@ import numpy as np
 from collections import Counter, OrderedDict
 import pickle
 import GSminimal as GS
-instances = {460: (5, 13, [0, 60], [20,40], [-1, 0])}
+instances = {452: (17, 33, [4, 12], [552], [1, 0])}
 for i in instances.keys():
     w, h, fixed, load_node, load_values = instances[i]
     Wtotal = 10 * (instances[i][0] - 1)
@@ -12,7 +12,7 @@ for i in instances.keys():
     pickle_in = open(f_name, "rb")
     ground1 = pickle.load(pickle_in)
     Nd = ground1[0];    PML = ground1[1];    r_ound = 1;    stop = False
-N_= {i:list(Nd[i].coord) for i in Nd.keys()}
+N_ = {i: list(Nd[i].coord) for i in Nd.keys()}
 
 NN = ['%f/%f/%i' % (N_[i][0]/10, N_[i][1]/10, i) for i in N_.keys()]
 print(NN)
