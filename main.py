@@ -14,8 +14,8 @@ import operator
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {452: (17, 33, [4, 12], [552], [1, 0])}
-load_magnit = [10] #list(range(100, 401, 20))
+instances = {9: (3, 3, [0, 2], [7], [0, 1])}
+load_magnit = [100] #list(range(100, 401, 20))
 # -------------------------------------------------------------------
 for ins in instances.keys():
     results_data = {}
@@ -27,11 +27,11 @@ for ins in instances.keys():
         ll = l # ll:Load magnitude 25
         w, h, fixed, load_node, load_values = instances[ins]
         today = str(datetime.date.today())
-        foldername = 'C:/Users/ozt0008/Desktop/rere/Experiments/' + today + '/' + str(ins) + '/' + str(l) + '/'
+        foldername = 'C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins) + '/' + str(l) + '/'
         if not os.path.isdir(foldername):
             os.makedirs(foldername)
         c_f = open(foldername + 'Output_record ' + str(ins) + '.txt', 'w+')
-        c_f2 = open('C:/Users/ozt0008/Desktop/rere/Experiments/' + today + '/' + str(ins) + '/' + 'Total_output_record' + str(ins)+'.txt', 'w+')
+        c_f2 = open('C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins) + '/' + 'Total_output_record' + str(ins)+'.txt', 'w+')
         load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
         ff = max(map(abs, load_values)) / 1  # Max possible stress
     # -------- Generating the ground structure from which the base GS will be selected ----------
