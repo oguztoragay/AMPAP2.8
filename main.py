@@ -3,35 +3,31 @@ import os
 import datetime
 import pickle
 import time
+import numpy as np
+import functools
+import operator
 
 import GSminimal as GS
 from GM26 import evaluate_result
 from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
-import numpy as np
-import functools
-import operator
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {9: (3, 3, [0, 2], [7], [0, 1])}
-load_magnit = [100] #list(range(100, 401, 20))
+instances = {9: (3, 3, [0, 2], [7], [0, 1], 50, 50)}
+load_magnit = [500] #list(range(100, 401, 20))
 # -------------------------------------------------------------------
-for ins in instances.keys():
+for ins_key, ins_body in instances.items():
     results_data = {}
     for l in load_magnit:
-        if ins < 45: Wtotal = 50; Htotal = 50
-        else:
-            Wtotal = 40 #10*(instances[ins][0]-1)
-            Htotal = 80 #10*(instances[ins][1]-1)
         ll = l # ll:Load magnitude 25
-        w, h, fixed, load_node, load_values = instances[ins]
+        w, h, fixed, load_node, load_values, Wtotal, Htotal = ins_body
         today = str(datetime.date.today())
-        foldername = 'C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins) + '/' + str(l) + '/'
+        foldername = 'C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + str(l) + '/'
         if not os.path.isdir(foldername):
             os.makedirs(foldername)
-        c_f = open(foldername + 'Output_record ' + str(ins) + '.txt', 'w+')
-        c_f2 = open('C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins) + '/' + 'Total_output_record' + str(ins)+'.txt', 'w+')
+        c_f = open(foldername + 'Output_record ' + str(ins_key) + '.txt', 'w+')
+        c_f2 = open('C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + 'Total_output_record' + str(ins_key)+'.txt', 'w+')
         load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
         ff = max(map(abs, load_values)) / 1  # Max possible stress
     # -------- Generating the ground structure from which the base GS will be selected ----------
@@ -42,7 +38,7 @@ for ins in instances.keys():
         ground1 = pickle.load(pickle_in)
         Nd = ground1[0];    PML = ground1[1];    r_ound = 1;    stop = False
         c_f.write('<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n')
-        c_f.write('0000000000000  (Instance: %d, Load: %d)  0000000000000\n' % (ins, ll))
+        c_f.write('0000000000000  (Instance: %d, Load: %d)  0000000000000\n' % (ins_key, ll))
         c_f.write('<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n')
         tabu_list = {}
         mm_tabu_list = [0]
@@ -86,9 +82,9 @@ for ins in instances.keys():
         make_gif_for_me(foldername)
 
 # ------------------- Experiments for the paper:
-# 9: (3, 3, [0, 2], [7], [0, 1]) # don't forget to check the size
-# 16: (4, 4, [0, 3], [14], [0, 1]) # don't forget to check the size
-# 25: (5, 5, [0, 4], [22], [0, 1]) # don't forget to check the size
+# 9: (3, 3, [0, 2], [7], [0, 1], 50, 50) # don't forget to check the size
+# 16: (4, 4, [0, 3], [14], [0, 1], 50, 50) # don't forget to check the size
+# 25: (5, 5, [0, 4], [22], [0, 1], 50, 50) # don't forget to check the size
 # 450: (5, 9, [1, 3], [42], [1, 0]) # Coarse
 # 451: (9, 17, [2, 6], [148], [1, 0]) # Normal
 # 452: (17, 33, [4, 12], [552], [1, 0]) # Fine

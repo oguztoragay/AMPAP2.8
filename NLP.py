@@ -3,7 +3,7 @@
 # 11/17/2021 Bonmin option added to the code
 import os
 os.environ['PARDISOLICMESSAGE'] = '1'
-os.environ['OMP_NUM_THREADS'] = '8'
+os.environ['OMP_NUM_THREADS'] = '24'
 import numpy as np
 import pyomo.environ
 from pyomo.environ import *
@@ -119,12 +119,13 @@ def nlp(Nd, Cn, smax, solver_name):
 
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
     # solver = SolverFactory('bonmin', executable='C:/Users/ozt0008/Desktop/CoinAll-1.6.0-win64-intel11.1/CoinAll-1.6.0-win64-intel11.1/bin/bonmin.exe', tee=True)
-    solver = SolverFactory(solver_name, executable='C:/Program Files/Ipopt/bin/ipopt.exe', tee=False)
+    # solver = SolverFactory(solver_name, executable='C:/Program Files/Ipopt/bin/ipopt.exe', tee=False)
+    solver = SolverFactory('ipopt', tee=True)
     solver.options['constr_viol_tol'] = 1e-6
     solver.options['tol'] = 1e-6 #10**-(itr+2)
     solver.options['acceptable_tol'] = 1e-6
     solver.options['acceptable_iter'] = 10
-    solver.options['linear_solver'] = 'pardiso'
+    # solver.options['linear_solver'] = 'pardiso'
     solver.options['max_iter'] = 10000
     solver.options['obj_scaling_factor'] = 0.1
     solver.options['print_level'] = 0
