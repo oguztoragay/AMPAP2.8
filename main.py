@@ -14,8 +14,8 @@ from pdf2gif import make_gif_for_me
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {9: (3, 3, [0, 2], [7], [0, 1], 50, 50)}
-load_magnit = [500] #list(range(100, 401, 20))
+instances = {25: (5, 5, [0, 4], [22], [0, 1], 50, 50)}
+load_magnit = [360] #list(range(100, 401, 20))
 # -------------------------------------------------------------------
 for ins_key, ins_body in instances.items():
     results_data = {}
@@ -82,11 +82,11 @@ for ins_key, ins_body in instances.items():
         make_gif_for_me(foldername)
 
 # ------------------- Experiments for the paper:
-# 9: (3, 3, [0, 2], [7], [0, 1], 50, 50) # don't forget to check the size
-# 16: (4, 4, [0, 3], [14], [0, 1], 50, 50) # don't forget to check the size
-# 25: (5, 5, [0, 4], [22], [0, 1], 50, 50) # don't forget to check the size
-# 450: (5, 9, [1, 3], [42], [1, 0]) # Coarse
-# 451: (9, 17, [2, 6], [148], [1, 0]) # Normal
-# 452: (17, 33, [4, 12], [552], [1, 0]) # Fine
+# 9: (3, 3, [0, 2], [7], [0, 1], 50, 50)
+# 16: (4, 4, [0, 3], [14], [0, 1], 50, 50)
+# 25: (5, 5, [0, 4], [22], [0, 1], 50, 50)
+# 450: (5, 9, [1, 3], [42], [1, 0], 40, 80) # Coarse
+# 451: (9, 17, [2, 6], [148], [1, 0], 40, 80) # Normal
+# 452: (17, 33, [4, 12], [552], [1, 0], 40, 80) # Fine
 # 650: (13, 5, [0, 12], [4, 8], [0, -1]) # horizontal bridge
 # 651: (5, 13, [0, 60], [20, 40], [-1, 0]) # vertical bridge

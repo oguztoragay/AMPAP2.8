@@ -100,8 +100,8 @@ def nlp(Nd, Cn, smax, solver_name):
     #     toucher = seg1.touches(seg2)
     #     if int_pt == True and toucher == False:
     #         m.cons7.add(m.a[i] * m.a[j] <= 0)
-    #     # else:
-    #     #     Constraint.Skip
+    #     else:
+    #         Constraint.Skip
     # timer.stop('Cons7')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('importing')
