@@ -7,15 +7,15 @@ import numpy as np
 import functools
 import operator
 
-import GSminimal as GS
+import GSminimal2 as GS
 from GM26 import evaluate_result
 from Frameopt import frameopt
 from pdf2gif import make_gif_for_me
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {25: (5, 5, [0, 4], [22], [0, 1], 50, 50)}
-load_magnit = [360] #list(range(100, 401, 20))
+instances = {450: (5, 9, [1, 3], [42], [1, 0], 40, 80)}
+load_magnit = [10]  #list(range(100, 401, 20))  # [400]
 # -------------------------------------------------------------------
 for ins_key, ins_body in instances.items():
     results_data = {}
