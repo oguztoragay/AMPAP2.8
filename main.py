@@ -10,12 +10,12 @@ import operator
 import GSminimal2 as GS
 from GM26 import evaluate_result
 from Frameopt import frameopt
-from pdf2gif import make_gif_for_me
+# from pdf2gif import make_gif_for_me
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {450: (5, 9, [1, 3], [42], [1, 0], 40, 80)}
-load_magnit = [10]  #list(range(100, 401, 20))  # [400]
+instances = {25: (5, 5, [0, 4], [22], [0, 1], 50, 50)}
+load_magnit = [100]  #list(range(100, 401, 20))  # [400]
 # -------------------------------------------------------------------
 for ins_key, ins_body in instances.items():
     results_data = {}
@@ -23,11 +23,11 @@ for ins_key, ins_body in instances.items():
         ll = l # ll:Load magnitude 25
         w, h, fixed, load_node, load_values, Wtotal, Htotal = ins_body
         today = str(datetime.date.today())
-        foldername = 'C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + str(l) + '/'
+        foldername = 'C:/Users/otoragay/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + str(l) + '/'
         if not os.path.isdir(foldername):
             os.makedirs(foldername)
         c_f = open(foldername + 'Output_record ' + str(ins_key) + '.txt', 'w+')
-        c_f2 = open('C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + 'Total_output_record' + str(ins_key)+'.txt', 'w+')
+        c_f2 = open('C:/Users/otoragay/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + 'Total_output_record' + str(ins_key)+'.txt', 'w+')
         load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
         ff = max(map(abs, load_values)) / 1  # Max possible stress
     # -------- Generating the ground structure from which the base GS will be selected ----------
@@ -79,7 +79,7 @@ for ins_key, ins_body in instances.items():
             c_f2.write('%d \t %s \t %s \n' % (i, results_data[i][0], results_data[i][1]))
         c_f2.close()
         c_f.close()
-        make_gif_for_me(foldername)
+        # make_gif_for_me(foldername)
 
 # ------------------- Experiments for the paper:
 # 9: (3, 3, [0, 2], [7], [0, 1], 50, 50)

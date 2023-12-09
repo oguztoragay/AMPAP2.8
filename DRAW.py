@@ -8,7 +8,7 @@ from My_count import count
 def general_darw(nodes, celements, X, volume, t_ime, foldername, itr, r_ound, s_tep, which_one, wt, ht, u):
     ss = str(general_darw.counter)
     draw_number = ss.zfill(5)
-    size_ = (5, 9)
+    size_ = (5, 5)
     a0 = 0
     if which_one == 1:
         Draw_GROUND_dashed(nodes, celements, foldername, draw_number, size_, a0)
