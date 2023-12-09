@@ -6,15 +6,16 @@ import pickle
 import itertools
 
 def frameopt(Nd, PML, st, foldername, Wtotal, wt, ht, c_f, r_ound, hazf):
-    index_for_in1 = {k: v for k, v in PML.items() if (v.length <= (Wtotal / (wt - 1)) and v.okay)}.keys()  # minimal GS is chosen here (only neighbur nodes) * (np.sqrt(2))
+    index_for_in1 = {k: v for k, v in PML.items() if (v.length <= (Wtotal / (wt - 1)) and v.okay)}.keys()  # minimal GS is chosen here (only neighbour nodes) * (np.sqrt(2))
     load_node = [i for i in Nd if Nd[i].tip == 2]
-    index_for_in2 = {k: v for k, v in PML.items() if (v.orient[0] in load_node or v.orient[1] in load_node)}.keys()  # minimal GS is chosen here (only neighbur nodes)
+    index_for_in2 = {k: v for k, v in PML.items() if (v.orient[0] in load_node or v.orient[1] in load_node)}.keys()  # minimal GS is chosen here (only neighbour nodes)
     fix_nodes = [i for i in Nd if Nd[i].tip == 1]
-    index_for_in3 = {k: v for k, v in PML.items() if (v.orient[0] in fix_nodes or v.orient[1] in fix_nodes)}.keys()  # minimal GS is chosen here (only neighbur nodes)
+    index_for_in3 = {k: v for k, v in PML.items() if (v.orient[0] in fix_nodes or v.orient[1] in fix_nodes)}.keys()  # minimal GS is chosen here (only neighbour nodes)
     alldict = [index_for_in1, index_for_in2, index_for_in3]
-    index_for_in = set().union(*alldict)
+    # index_for_in = set().union(*alldict)
+    index_for_in = PML.keys()
     if r_ound == 1:
-        print(len(index_for_in))
+        print('included members before:', len(index_for_in))
         for p in index_for_in:
             PML[p].inn = True
     if r_ound > 1:

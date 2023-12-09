@@ -3,7 +3,7 @@
 # 11/17/2021 Bonmin option added to the code
 import os
 os.environ['PARDISOLICMESSAGE'] = '1'
-os.environ['OMP_NUM_THREADS'] = '8'
+os.environ['OMP_NUM_THREADS'] = '24'
 import numpy as np
 import pyomo.environ
 from pyomo.environ import *
@@ -84,25 +84,25 @@ def nlp(Nd, Cn, smax, solver_name):
     # m.cons3 = Constraint(expr=m.z <= limit)
     # timer.stop('Cons3')
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
-    # timer.start('Cons4')
-    # m.cons4 = ConstraintList()
-    # for i in m.free:
-    #     m.cons4.add(m.d[i] - dmax <= 0)
-    #     m.cons4.add(m.d[i] + dmax >= 0)
-    # timer.stop('Cons4')
+    timer.start('Cons4')
+    m.cons4 = ConstraintList()
+    for i in m.free:
+        m.cons4.add(m.d[i] - dmax <= 0)
+        m.cons4.add(m.d[i] + dmax >= 0)
+    timer.stop('Cons4')
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
-    # timer.start('Cons7')
-    # m.cons7 = ConstraintList()
-    # for i, j in itertools.combinations(m.LE, 2):
-    #     seg1 = LineString([[Cn[i].nodei.x, Cn[i].nodei.y], [Cn[i].nodej.x, Cn[i].nodej.y]])
-    #     seg2 = LineString([[Cn[j].nodei.x, Cn[j].nodei.y], [Cn[j].nodej.x, Cn[j].nodej.y]])
-    #     int_pt = seg1.intersects(seg2)
-    #     toucher = seg1.touches(seg2)
-    #     if int_pt == True and toucher == False:
-    #         m.cons7.add(m.a[i] * m.a[j] <= 0)
-    #     # else:
-    #     #     Constraint.Skip
-    # timer.stop('Cons7')
+    timer.start('Cons7')
+    m.cons7 = ConstraintList()
+    for i, j in itertools.combinations(m.LE, 2):
+        seg1 = LineString([[Cn[i].nodei.x, Cn[i].nodei.y], [Cn[i].nodej.x, Cn[i].nodej.y]])
+        seg2 = LineString([[Cn[j].nodei.x, Cn[j].nodei.y], [Cn[j].nodej.x, Cn[j].nodej.y]])
+        int_pt = seg1.intersects(seg2)
+        toucher = seg1.touches(seg2)
+        if int_pt == True and toucher == False:
+            m.cons7.add(m.a[i] * m.a[j] <= 0)
+        else:
+            Constraint.Skip
+    timer.stop('Cons7')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('importing')
     # # Ipopt bound multipliers (obtained from solution)
@@ -119,12 +119,13 @@ def nlp(Nd, Cn, smax, solver_name):
 
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
     # solver = SolverFactory('bonmin', executable='C:/Users/ozt0008/Desktop/CoinAll-1.6.0-win64-intel11.1/CoinAll-1.6.0-win64-intel11.1/bin/bonmin.exe', tee=True)
-    solver = SolverFactory(solver_name, executable='C:/Program Files/Ipopt/bin/ipopt.exe', tee=False)
+    # solver = SolverFactory(solver_name, executable='C:/Program Files/Ipopt/bin/ipopt.exe', tee=False)
+    solver = SolverFactory('ipopt', tee=True)
     solver.options['constr_viol_tol'] = 1e-6
     solver.options['tol'] = 1e-6 #10**-(itr+2)
     solver.options['acceptable_tol'] = 1e-6
     solver.options['acceptable_iter'] = 10
-    solver.options['linear_solver'] = 'pardiso'
+    # solver.options['linear_solver'] = 'pardiso'
     solver.options['max_iter'] = 10000
     solver.options['obj_scaling_factor'] = 0.1
     solver.options['print_level'] = 0
@@ -156,7 +157,7 @@ def nlp(Nd, Cn, smax, solver_name):
     data1_nlp['Time'] = solution.solver[0]['Time']
     print("Time: %f, Termination: %s, Obj. Value: %f" % (np.round(solution.solver[0]['Time'], 4), solution.solver[0]['Termination condition'], value(m.z)))
     data1_nlp['Term_con'] = solution.solver[0]['Termination condition']
-    log_infeasible_constraints(m)
+    # log_infeasible_constraints(m)
     weight = value(m.z)
     print('\n ************** NLP is done with status "{}"! Weight is "{}" and solver is "{}"**************.'.format(
             solution.solver.termination_condition, np.round(weight, 4), 'Ipopt + pardiso'))
