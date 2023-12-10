@@ -91,18 +91,18 @@ def nlp(Nd, Cn, smax, solver_name):
         m.cons4.add(m.d[i] + dmax >= 0)
     timer.stop('Cons4')
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
-    timer.start('Cons7')
-    m.cons7 = ConstraintList()
-    for i, j in itertools.combinations(m.LE, 2):
-        seg1 = LineString([[Cn[i].nodei.x, Cn[i].nodei.y], [Cn[i].nodej.x, Cn[i].nodej.y]])
-        seg2 = LineString([[Cn[j].nodei.x, Cn[j].nodei.y], [Cn[j].nodej.x, Cn[j].nodej.y]])
-        int_pt = seg1.intersects(seg2)
-        toucher = seg1.touches(seg2)
-        if int_pt == True and toucher == False:
-            m.cons7.add(m.a[i] * m.a[j] <= 0)
-        else:
-            Constraint.Skip
-    timer.stop('Cons7')
+    # timer.start('Cons7')
+    # m.cons7 = ConstraintList()
+    # for i, j in itertools.combinations(m.LE, 2):
+    #     seg1 = LineString([[Cn[i].nodei.x, Cn[i].nodei.y], [Cn[i].nodej.x, Cn[i].nodej.y]])
+    #     seg2 = LineString([[Cn[j].nodei.x, Cn[j].nodei.y], [Cn[j].nodej.x, Cn[j].nodej.y]])
+    #     int_pt = seg1.intersects(seg2)
+    #     toucher = seg1.touches(seg2)
+    #     if int_pt == True and toucher == False:
+    #         m.cons7.add(m.a[i] * m.a[j] <= 0)
+    #     else:
+    #         Constraint.Skip
+    # timer.stop('Cons7')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('importing')
     # # Ipopt bound multipliers (obtained from solution)

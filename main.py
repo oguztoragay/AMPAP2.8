@@ -14,8 +14,8 @@ from Frameopt import frameopt
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {25: (5, 5, [0, 4], [22], [0, 1], 50, 50)}
-load_magnit = [100]  #list(range(100, 401, 20))  # [400]
+instances = {451: (9, 17, [2, 6], [148], [1, 0], 40, 80)}
+load_magnit = [10]  #list(range(100, 401, 20))  # [400]
 # -------------------------------------------------------------------
 for ins_key, ins_body in instances.items():
     results_data = {}

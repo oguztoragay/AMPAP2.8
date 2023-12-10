@@ -34,7 +34,7 @@ class Generate:  # Ground structure generator
             seg = [] if convex else LineString([Nd[i], Nd[j]])
             if convex or poly.contains(seg) or poly.boundary.contains(seg):
                 name_iter += 1
-                PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter, angle])
+                PML.append([i, j, np.sqrt(dx ** 2 + dy ** 2), False, name_iter, angle, Point(Nd[i][0], Nd[i][1]), Point(Nd[j][0], Nd[j][1])])
         PML = np.array(PML)
         self.nodes = {}  # Dictionary of Node instances to be filled
         self.celements = {}  # Dictionary of continuous Element instances to be filled
@@ -49,6 +49,16 @@ class Generate:  # Ground structure generator
                 l_n = 0;                l_v = 0    # Tip for normal nodes = 0
             self.nodes[i] = Node(i, Nd[i][0], Nd[i][1], l_n, l_v)
         totalnode = len(self.nodes)
+        PML_dic = {PML[m][4]: PML[m] for m in range(len(PML))}
+        for el in itertools.combinations(PML_dic.keys(), 2):
+            line1 = LineString([PML[el[0]][6], PML[el[0]][7]])
+            line2 = LineString([PML[el[1]][6], PML[el[1]][7]])
+            intersection = line1.intersection(line2)
+            if intersection == line1 and el[1] in PML_dic.keys():
+                PML_dic.pop(el[1])
+            if intersection == line2 and el[0] in PML_dic.keys():
+                PML_dic.pop(el[0])
+        PML = PML_dic.values()
         pml = 0
         for i in PML:
             temp_celement = CElement(self.nodes[i[0]], self.nodes[i[1]], totalnode, i[4], 0, i[-1])
