@@ -91,18 +91,18 @@ def nlp(Nd, Cn, smax, solver_name):
         m.cons4.add(m.d[i] + dmax >= 0)
     timer.stop('Cons4')
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
-    timer.start('Cons7')
-    m.cons7 = ConstraintList()
-    for i, j in itertools.combinations(m.LE, 2):
-        seg1 = LineString([[Cn[i].nodei.x, Cn[i].nodei.y], [Cn[i].nodej.x, Cn[i].nodej.y]])
-        seg2 = LineString([[Cn[j].nodei.x, Cn[j].nodei.y], [Cn[j].nodej.x, Cn[j].nodej.y]])
-        int_pt = seg1.intersects(seg2)
-        toucher = seg1.touches(seg2)
-        if int_pt == True and toucher == False:
-            m.cons7.add(m.a[i] * m.a[j] <= 0)
-        else:
-            Constraint.Skip
-    timer.stop('Cons7')
+    # timer.start('Cons7')
+    # m.cons7 = ConstraintList()
+    # for i, j in itertools.combinations(m.LE, 2):
+    #     seg1 = LineString([[Cn[i].nodei.x, Cn[i].nodei.y], [Cn[i].nodej.x, Cn[i].nodej.y]])
+    #     seg2 = LineString([[Cn[j].nodei.x, Cn[j].nodei.y], [Cn[j].nodej.x, Cn[j].nodej.y]])
+    #     int_pt = seg1.intersects(seg2)
+    #     toucher = seg1.touches(seg2)
+    #     if int_pt == True and toucher == False:
+    #         m.cons7.add(m.a[i] * m.a[j] <= 0)
+    #     else:
+    #         Constraint.Skip
+    # timer.stop('Cons7')
     # --------------------------------------------------------------------------------------------------------------------------------------------------
     # timer.start('importing')
     # # Ipopt bound multipliers (obtained from solution)
@@ -120,8 +120,7 @@ def nlp(Nd, Cn, smax, solver_name):
     # # --------------------------------------------------------------------------------------------------------------------------------------------------
     # solver = SolverFactory('bonmin', executable='C:/Users/ozt0008/Desktop/CoinAll-1.6.0-win64-intel11.1/CoinAll-1.6.0-win64-intel11.1/bin/bonmin.exe', tee=True)
     # solver = SolverFactory(solver_name, executable='C:/Program Files/Ipopt/bin/ipopt.exe', tee=False)
-    # solver = SolverFactory('gurobi', tee=True, executable='C:/gurobi1100/win64/bin/gurobi_cl.exe')
-    solver = SolverFactory('ipopt', tee=True, executable='C:/Ipopt/bin/ipopt.exe')
+    solver = SolverFactory('ipopt', tee=True, executable='C:/Users/oguzt/Desktop/Ipopt/bin/ipopt.exe')
     solver.options['constr_viol_tol'] = 1e-6
     solver.options['tol'] = 1e-6 #10**-(itr+2)
     solver.options['acceptable_tol'] = 1e-6

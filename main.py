@@ -14,8 +14,8 @@ from Frameopt import frameopt
 from clean_elements import clean_elements1
 from DRAW import general_darw
 # -------------------------------------------------------------------
-instances = {450: (5, 9, [1, 3], [42], [1, 0], 40, 80)}
-load_magnit = [10]  # list(range(100, 401, 20))
+instances = {452: (17, 33, [4, 12], [552], [1, 0], 40, 80)}
+load_magnit = [10]  #list(range(100, 401, 20))  # [400]
 # -------------------------------------------------------------------
 for ins_key, ins_body in instances.items():
     results_data = {}
@@ -23,11 +23,11 @@ for ins_key, ins_body in instances.items():
         ll = l # ll:Load magnitude 25
         w, h, fixed, load_node, load_values, Wtotal, Htotal = ins_body
         today = str(datetime.date.today())
-        foldername = 'C:/Users/otoragay/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + str(l) + '/'
+        foldername = 'C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + str(l) + '/'
         if not os.path.isdir(foldername):
             os.makedirs(foldername)
         c_f = open(foldername + 'Output_record ' + str(ins_key) + '.txt', 'w+')
-        c_f2 = open('C:/Users/otoragay/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + 'Total_output_record' + str(ins_key)+'.txt', 'w+')
+        c_f2 = open('C:/Users/oguzt/Desktop/rere/Experiments/' + today + '/' + str(ins_key) + '/' + 'Total_output_record' + str(ins_key)+'.txt', 'w+')
         load_values = [ll*f for f in load_values]  # Load magnitude in x and y directions
         ff = max(map(abs, load_values)) / 1  # Max possible stress
     # -------- Generating the ground structure from which the base GS will be selected ----------
@@ -49,6 +49,7 @@ for ins_key, ins_body in instances.items():
             print('\n<><><><><><><><><><><><><><><>( Round: %d )<><><><><><><><><><><><><><><>\n' % r_ound)
             c_f.write('\n<><><><><><><><><><><><><><><>( Round: %d )<><><><><><><><><><><><><><><>\n\n' % r_ound)
             if nna != 0:
+                stop = True # bunu ekledim ki dayana bir round dan sora
                 print('------------------------------------------------  ', nna)
                 r_ound += 1
                 GS.re_Generate(w, h, fixed, load_node, load_values, ff, foldername, remained_nodes, tabu_list, nna, Wtotal, Htotal)
